@@ -3,906 +3,2169 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>拼豆DIY · 用户端</title>
+<title>拼豆DIY · 商家后台V3</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue','Microsoft YaHei',sans-serif;background:#fff;color:#333;max-width:430px;margin:0 auto;min-height:100vh;position:relative;overflow-x:hidden}
-img{max-width:100%;display:block}
-input,button,textarea{font-family:inherit;outline:none;border:none}
-a{text-decoration:none;color:inherit}
-::-webkit-scrollbar{display:none}
+input,button,textarea,select{font-family:inherit;outline:none;border:none}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-thumb{background:#ddd;border-radius:2px}
 
-.page{display:none;min-height:100vh;padding-bottom:70px;animation:fadeIn .25s ease}
+.page{display:none;min-height:100vh;padding-bottom:80px;animation:fadeIn .25s ease}
 .page.active{display:block}
+.page.active.login-page{display:flex}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
-/* TabBar */
-.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;height:60px;background:#fff;display:flex;align-items:center;justify-content:space-around;border-top:1px solid #eee;z-index:1000;padding-bottom:env(safe-area-inset-bottom)}
-.tabbar-item{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:4px 12px}
-.tabbar-item svg{width:24px;height:24px;fill:#999}
-.tabbar-item span{font-size:10px;color:#999}
-.tabbar-item.active svg{fill:#ff6b35}
-.tabbar-item.active span{color:#ff6b35;font-weight:600}
+/* 登录页 */
+.login-page{min-height:100vh;background:linear-gradient(135deg,#667eea,#764ba2);align-items:center;justify-content:center;padding:20px;flex-direction:column}
+.login-card{background:#fff;border-radius:16px;padding:32px 24px;width:100%;max-width:360px;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.login-logo{text-align:center;margin-bottom:24px}
+.login-logo .icon{width:64px;height:64px;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:16px;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:32px}
+.login-logo h1{font-size:22px;color:#333}
+.login-logo p{font-size:13px;color:#999;margin-top:4px}
+.login-form .form-group{margin-bottom:16px}
+.login-form label{display:block;font-size:13px;color:#666;margin-bottom:6px}
+.login-form input{width:100%;padding:12px 16px;border:1px solid #e0e0e0;border-radius:10px;font-size:15px}
+.login-form input:focus{border-color:#667eea}
+.login-form .remember{display:flex;align-items:center;gap:8px;font-size:13px;color:#666;margin-bottom:20px}
+.login-form .remember input{width:16px;height:16px}
+.login-btn{width:100%;padding:14px;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;font-size:16px;font-weight:600;border-radius:10px;cursor:pointer}
+.login-btn:active{opacity:.85}
 
-/* Navbar */
-.navbar{position:sticky;top:0;z-index:100;background:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 1px 4px rgba(0,0,0,.06)}
-.navbar-title{font-size:17px;font-weight:600}
-.navbar-back{width:28px;height:28px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.navbar-back svg{width:20px;height:20px;fill:#333}
+/* 顶部导航 */
+.top-nav{position:sticky;top:0;z-index:100;background:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.top-nav .left{display:flex;align-items:center;gap:10px}
+.top-nav .menu-btn{width:36px;height:36px;background:#f5f5f5;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.top-nav .menu-btn svg{width:20px;height:20px;fill:#666}
+.top-nav .title{font-size:17px;font-weight:600}
+.top-nav .right{display:flex;align-items:center;gap:8px}
+.top-nav .avatar{width:32px;height:32px;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff}
+.cb-switch{display:flex;align-items:center;background:#f0f2f5;border-radius:20px;padding:3px;cursor:pointer;gap:2px}
+.cb-switch .cb-btn{padding:4px 12px;border-radius:16px;font-size:11px;color:#999;transition:all .2s;white-space:nowrap}
+.cb-switch .cb-btn.active{background:#667eea;color:#fff;font-weight:600}
 
-/* C/B切换按钮 */
-.cb-switch{display:flex;align-items:center;background:rgba(255,255,255,.2);border-radius:20px;padding:3px;cursor:pointer;gap:2px}
-.cb-switch .cb-btn{padding:4px 12px;border-radius:16px;font-size:11px;color:rgba(255,255,255,.8);transition:all .2s;white-space:nowrap}
-.cb-switch .cb-btn.active{background:rgba(255,255,255,.35);color:#fff;font-weight:600}
+/* 侧边栏 */
+.sidebar{position:fixed;top:0;left:-280px;width:280px;height:100vh;background:#fff;z-index:1000;transition:left .3s ease;box-shadow:4px 0 20px rgba(0,0,0,.1)}
+.sidebar.open{left:0}
+.sidebar-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:999;display:none}
+.sidebar-overlay.show{display:block}
+.sidebar-header{padding:20px 16px;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff}
+.sidebar-header .store-name{font-size:16px;font-weight:600;margin-bottom:4px}
+.sidebar-header .store-id{font-size:12px;opacity:.8}
+.sidebar-menu{padding:12px 0}
+.sidebar-item{display:flex;align-items:center;gap:12px;padding:14px 20px;cursor:pointer;transition:background .2s}
+.sidebar-item:active{background:#f5f5f5}
+.sidebar-item.active{background:#f0f4ff;color:#667eea}
+.sidebar-item svg{width:20px;height:20px;fill:currentColor}
+.sidebar-item span{font-size:14px}
+.sidebar-item .badge{margin-left:auto;background:#f44336;color:#fff;font-size:11px;padding:2px 8px;border-radius:10px}
 
-/* 首页 */
-.home-header{background:linear-gradient(135deg,#7c3aed,#a78bfa);padding:20px 16px 16px;color:#fff;text-align:center}
-.home-header-top{display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:14px}
-.store-info{display:flex;flex-direction:column;align-items:center;gap:6px}
-.store-logo{width:52px;height:52px;background:#fff;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 2px 8px rgba(0,0,0,.1)}
-.store-name{font-size:17px;font-weight:700;letter-spacing:.5px}
-.store-hours{font-size:12px;opacity:.85;margin-top:0}
-.header-right{display:flex;align-items:center;gap:10px}
-.nav-btn{background:rgba(255,255,255,.2);border-radius:20px;padding:6px 14px;font-size:12px;display:flex;align-items:center;gap:4px;cursor:pointer}
-.nav-btn svg{width:14px;height:14px;fill:#fff}
+/* 统计卡片 */
+.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:12px}
+.stat-card{background:#fff;border-radius:12px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.08);border:1px solid #f0f0f0}
+.stat-card .label{font-size:12px;color:#999;margin-bottom:6px}
+.stat-card .value{font-size:24px;font-weight:700}
+.stat-card .change{font-size:11px;margin-top:4px}
+.stat-card .change.up{color:#4caf50}
+.stat-card .change.down{color:#f44336}
+.stat-card.primary{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none}
+.stat-card.primary .label{color:rgba(255,255,255,.8)}
+.stat-card.success{background:linear-gradient(135deg,#4caf50,#66bb6a);color:#fff;border:none}
+.stat-card.success .label{color:rgba(255,255,255,.8)}
+.stat-card.warning{background:linear-gradient(135deg,#ff9800,#ffb74d);color:#fff;border:none}
+.stat-card.warning .label{color:rgba(255,255,255,.8)}
 
-/* Banner */
-.banner-wrap{margin:12px 16px;border-radius:12px;overflow:hidden;position:relative;height:140px}
-.banner-track{display:flex;transition:transform .4s ease;height:100%}
-.banner-slide{min-width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:17px;font-weight:600;text-shadow:0 2px 8px rgba(0,0,0,.3)}
-.banner-slide:nth-child(1){background:linear-gradient(135deg,#667eea,#764ba2)}
-.banner-slide:nth-child(2){background:linear-gradient(135deg,#f093fb,#f5576c)}
-.banner-slide:nth-child(3){background:linear-gradient(135deg,#4facfe,#00f2fe)}
-.banner-dots{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:6px}
-.banner-dot{width:6px;height:6px;border-radius:3px;background:rgba(255,255,255,.5);cursor:pointer;transition:all .3s}
-.banner-dot.active{width:18px;background:#fff}
+/* 图表区域 */
+.chart-section{background:#fff;margin:12px;border-radius:12px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.08);border:1px solid #f0f0f0}
+.chart-section h3{font-size:15px;font-weight:600;margin-bottom:12px}
+.chart-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.chart-tabs{display:flex;gap:8px}
+.chart-tab{padding:6px 14px;font-size:12px;border-radius:16px;background:#f5f5f5;color:#666;cursor:pointer}
+.chart-tab.active{background:#667eea;color:#fff}
+.chart-placeholder{height:160px;background:#f8f9ff;border-radius:8px;position:relative;padding:30px 16px 24px;margin:0 4px}
+.chart-line-wrap{position:relative;width:100%;height:100%}
+.chart-line-svg{position:absolute;top:0;left:0;width:100%;height:100%}
+.chart-line-path{fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.chart-line-area{fill-opacity:0.1;stroke:none}
+.chart-point{position:absolute;width:10px;height:10px;border-radius:50%;border:2px solid #fff;transform:translate(-50%,-50%);box-shadow:0 2px 4px rgba(0,0,0,.2)}
+.chart-point-label{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:600;color:#333;white-space:nowrap;background:rgba(255,255,255,.9);padding:1px 4px;border-radius:4px}
+.chart-axis{display:flex;justify-content:space-between;margin-top:8px;font-size:10px;color:#999;padding:0 4px}
+.chart-legend{display:flex;gap:16px;justify-content:center;margin-top:8px;font-size:11px}
+.legend-item{display:flex;align-items:center;gap:4px}
+.legend-dot{width:8px;height:8px;border-radius:2px}
 
-/* 功能入口 */
-.func-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:16px;background:#fff;margin:12px 16px;border-radius:12px}
-.func-item{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer}
-.func-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px}
-.func-item span{font-size:11px;color:#666}
+/* 当日已购量看板 */
+.purchase-board{background:#fff;margin:12px;border-radius:12px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.08);border:1px solid #f0f0f0}
+.purchase-board h3{font-size:15px;font-weight:600;padding:14px 16px 8px}
+.purchase-board-item{display:flex;align-items:center;padding:12px 16px;border-bottom:1px solid #f5f5f5}
+.purchase-board-item:last-child{border-bottom:none}
+.pb-icon{width:40px;height:40px;border-radius:10px;background:#fff3e0;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;margin-right:12px}
+.pb-info{flex:1}
+.pb-info h4{font-size:13px;font-weight:500;margin-bottom:4px}
+.pb-info .meta{font-size:11px;color:#999}
+.pb-stats{display:flex;gap:12px;text-align:center}
+.pb-stat .num{font-size:16px;font-weight:700}
+.pb-stat .num.hot{color:#f44336}
+.pb-stat .num.ok{color:#4caf50}
+.pb-stat .num.wait{color:#ff9800}
+.pb-stat .lbl{font-size:10px;color:#999}
+.pb-bar{height:6px;background:#f0f0f0;border-radius:3px;overflow:hidden;margin:6px 16px 12px}
+.pb-bar-fill{height:100%;border-radius:3px;transition:width .5s}
+.pb-bar-fill.purchased{background:#667eea}
+.pb-bar-fill.verified{background:#4caf50}
+.pb-bar-fill.pending{background:#ff9800}
+.pb-bar-fill.available{background:#2196f3}
+.pb-desc{font-size:11px;color:#666;padding:0 16px 12px}
 
-/* 当日已购量板块 */
-.purchase-section{background:#fff;margin:0 16px 12px;border-radius:12px;overflow:hidden}
-.purchase-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 8px}
-.purchase-header h3{font-size:15px;font-weight:600}
-.purchase-header .hot{font-size:12px;color:#ff6b35;display:flex;align-items:center;gap:2px}
-.purchase-card{margin:0 12px 12px;border-radius:10px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,.06)}
-.purchase-card-inner{display:flex;align-items:center;padding:12px}
-.purchase-card-left{width:80px;text-align:center;flex-shrink:0}
-.purchase-card-left .price{font-size:22px;font-weight:700;color:#ff6b35}
-.purchase-card-left .price small{font-size:12px}
-.purchase-card-left .original{font-size:11px;color:#bbb;text-decoration:line-through}
-.purchase-card-right{flex:1;padding-left:12px;border-left:1px solid #f0f0f0}
-.purchase-card-right h4{font-size:13px;font-weight:500;margin-bottom:4px}
-.purchase-card-right .desc{font-size:11px;color:#999;margin-bottom:8px}
-.purchase-stats{display:flex;gap:12px;margin-bottom:8px}
-.purchase-stat{font-size:11px;color:#666}
-.purchase-stat strong{color:#ff6b35;font-weight:600}
-.purchase-bar{height:6px;background:#f0f0f0;border-radius:3px;overflow:hidden;margin-bottom:8px}
-.purchase-bar-fill{height:100%;border-radius:3px;transition:width .5s}
-.purchase-bar-fill.hot{background:linear-gradient(90deg,#ff6b35,#ff8f5e)}
-.purchase-bar-fill.warm{background:linear-gradient(90deg,#ff9800,#ffb74d)}
-.purchase-bar-fill.cool{background:linear-gradient(90deg,#4caf50,#66bb6a)}
-.purchase-go{display:inline-block;padding:4px 14px;background:#ff6b35;color:#fff;border-radius:14px;font-size:11px;cursor:pointer}
-.purchase-go:active{opacity:.8}
+/* 排行列表 */
+.rank-list{background:#fff;margin:12px;border-radius:12px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.08);border:1px solid #f0f0f0}
+.rank-list h3{font-size:15px;font-weight:600;margin-bottom:12px}
+.rank-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5}
+.rank-item:last-child{border-bottom:none}
+.rank-num{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600}
+.rank-num.gold{background:#fff3e0;color:#ff9800}
+.rank-num.silver{background:#f5f5f5;color:#9e9e9e}
+.rank-num.bronze{background:#fff8e1;color:#ffc107}
+.rank-num.normal{background:#f5f5f5;color:#999}
+.rank-img{width:44px;height:44px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px}
+.rank-info{flex:1}
+.rank-info h4{font-size:14px;margin-bottom:2px}
+.rank-info p{font-size:11px;color:#999}
+.rank-count{font-size:14px;font-weight:600;color:#667eea}
 
-/* 时段预约 */
-.time-slot-card{background:#fff;margin:0 16px 10px;border-radius:12px;padding:14px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
-.time-slot-card .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-.time-slot-card .header h4{font-size:14px;font-weight:600}
-.time-slot-card .header .badge{font-size:11px;padding:2px 8px;border-radius:10px}
-.time-slots{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.time-slot{padding:10px 6px;border-radius:8px;text-align:center;background:#f8f8f8;cursor:pointer;transition:all .2s;border:2px solid transparent}
-.time-slot .time{font-size:13px;font-weight:600;margin-bottom:2px}
-.time-slot .status{font-size:10px;color:#999}
-.time-slot.available{background:#e8f5e9}
-.time-slot.available .status{color:#4caf50}
-.time-slot.selected{border-color:#ff6b35;background:#fff3e0}
-.time-slot.disabled{opacity:.4;cursor:not-allowed}
+/* 队列管理 */
+.queue-tabs{display:flex;background:#fff;margin:12px;border-radius:16px;padding:4px;gap:4px;box-shadow:0 2px 8px rgba(0,0,0,.06);border:1px solid #f0f0f0}
+.queue-tab{flex:1;text-align:center;padding:10px 6px;font-size:12px;color:#888;cursor:pointer;border-radius:12px;transition:all .2s;background:transparent}
+.queue-tab.active{color:#fff;font-weight:600;background:linear-gradient(135deg,#667eea,#764ba2);box-shadow:0 2px 8px rgba(102,126,234,.3)}
+.queue-tab .count{position:absolute;top:8px;right:20px;background:#f44336;color:#fff;font-size:10px;padding:1px 6px;border-radius:8px}
+.queue-card{background:#fff;margin:12px;border-radius:12px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.08);border:1px solid #f0f0f0}
+.queue-card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.queue-card-header h4{font-size:14px;font-weight:600}
+.queue-number{font-size:36px;font-weight:700;color:#667eea;text-align:center;margin:16px 0}
+.queue-info{display:flex;justify-content:space-around;text-align:center;margin-bottom:16px}
+.queue-info-item .label{font-size:11px;color:#999}
+.queue-info-item .value{font-size:16px;font-weight:600;margin-top:2px}
+.queue-actions{display:flex;gap:8px;flex-wrap:wrap}
+.queue-btn{flex:1;min-width:calc(50% - 4px);padding:10px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;text-align:center}
+.queue-btn:active{opacity:.7}
+.queue-btn.primary{background:#667eea;color:#fff}
+.queue-btn.success{background:#4caf50;color:#fff}
+.queue-btn.warning{background:#ff9800;color:#fff}
+.queue-btn.danger{background:#f44336;color:#fff}
+.queue-btn.outline{background:#fff;color:#666;border:1px solid #ddd}
 
-/* 大桌组队 */
-.team-card{background:#fff;margin:12px 16px;border-radius:12px;padding:16px;box-shadow:0 1px 6px rgba(0,0,0,.06)}
-.team-card h4{font-size:15px;font-weight:600;margin-bottom:12px}
-.team-info{display:flex;gap:12px;align-items:center;margin-bottom:12px}
-.team-avatar{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
-.team-detail{flex:1}
-.team-detail .name{font-size:14px;font-weight:500}
-.team-detail .meta{font-size:11px;color:#999;margin-top:2px}
-.team-members{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
-.team-member{display:flex;align-items:center;gap:4px;background:#f0f4ff;padding:4px 10px;border-radius:16px;font-size:12px}
-.team-member .avatar{width:20px;height:20px;border-radius:50%;background:#ddd;display:flex;align-items:center;justify-content:center;font-size:10px}
-.team-progress{margin-bottom:12px}
-.team-progress .label{font-size:12px;color:#666;margin-bottom:6px;display:flex;justify-content:space-between}
-.team-progress-bar{height:8px;background:#eee;border-radius:4px;overflow:hidden}
-.team-progress-fill{height:100%;background:linear-gradient(90deg,#667eea,#764ba2);border-radius:4px;transition:width .5s}
-.team-actions{display:flex;gap:8px}
-.team-btn{flex:1;padding:10px;border-radius:10px;font-size:13px;font-weight:500;cursor:pointer;text-align:center;transition:opacity .2s}
-.team-btn:active{opacity:.7}
-.team-btn.primary{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff}
-.team-btn.success{background:#4caf50;color:#fff}
-.team-btn.outline{background:#fff;color:#666;border:1px solid #ddd}
+/* 座位网格 */
+.station-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:12px}
+.station-item{background:#fff;border-radius:10px;padding:12px 8px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.08);border:1px solid #f0f0f0;cursor:pointer;transition:all .2s}
+.station-item .name{font-size:14px;font-weight:600;margin-bottom:4px}
+.station-item .status{font-size:11px;padding:2px 8px;border-radius:10px}
+.station-item .status.free{background:#e8f5e9;color:#4caf50}
+.station-item .status.locked{background:#ffebee;color:#f44336}
+.station-item .status.busy{background:#fff3e0;color:#ff9800}
+.station-item .status.team{background:#e3f2fd;color:#2196f3}
+.station-item.selected{border:2px solid #667eea}
 
-/* 选座 */
-.seat-legend{display:flex;gap:16px;justify-content:center;margin-bottom:16px}
-.legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:#666}
-.legend-dot{width:12px;height:12px;border-radius:3px}
-.legend-dot.free{background:#e8f5e9;border:1px solid #4caf50}
-.legend-dot.occupied{background:#ffcdd2;border:1px solid #f44336}
-.legend-dot.big{background:#e3f2fd;border:1px solid #2196f3}
-.legend-dot.locked{background:#f5f5f5;border:1px solid #bbb}
-.legend-dot.selected{background:#fff3e0;border:2px solid #ff6b35}
-.seats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.seat{aspect-ratio:1.2;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;font-size:12px;transition:all .2s;border:2px solid transparent}
-.seat.free{background:#e8f5e9;color:#4caf50}
-.seat.occupied{background:#ffcdd2;color:#f44336;cursor:not-allowed}
-.seat.big{background:#e3f2fd;color:#2196f3}
-.seat.locked{background:#f5f5f5;color:#bbb;cursor:not-allowed}
-.seat.selected{background:#fff3e0;border-color:#ff6b35;color:#ff6b35;font-weight:600}
-.seat svg{width:18px;height:18px;margin-bottom:2px}
+/* 大桌管理 */
+.team-manage-card{background:#fff;margin:10px 12px;border-radius:12px;padding:14px;box-shadow:0 1px 4px rgba(0,0,0,.08);border:1px solid #f0f0f0}
+.team-manage-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.team-manage-header h4{font-size:14px;font-weight:600}
+.team-manage-header .status{font-size:11px;padding:2px 8px;border-radius:10px}
+.team-manage-header .status.active{background:#e8f5e9;color:#4caf50}
+.team-manage-header .status.pending{background:#fff3e0;color:#ff9800}
+.team-manage-body{display:flex;gap:12px;align-items:center;margin-bottom:10px}
+.team-manage-body .members{display:flex;gap:4px;flex-wrap:wrap}
+.team-member-tag{padding:3px 8px;border-radius:12px;font-size:11px;background:#f0f4ff;color:#667eea}
+.team-manage-footer{display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid #f5f5f5}
+.team-manage-footer .purchase-info{font-size:11px;color:#ff6b35}
+.team-manage-footer .actions{display:flex;gap:6px}
+.team-manage-footer .actions button{padding:4px 10px;border-radius:12px;font-size:11px;cursor:pointer}
 
-/* 券包 */
-.coupon-tabs{display:flex;background:#fff;border-bottom:1px solid #eee}
-.coupon-tab{flex:1;text-align:center;padding:14px;font-size:14px;color:#666;cursor:pointer;position:relative}
-.coupon-tab.active{color:#ff6b35;font-weight:600}
-.coupon-tab.active::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:24px;height:3px;background:#ff6b35;border-radius:2px}
-.coupon-mine{background:#fff;margin:10px 16px;border-radius:12px;padding:14px;display:flex;align-items:center;gap:12px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
-.coupon-mine.used{opacity:.5}
-.coupon-mine.expired{opacity:.4}
-.coupon-mine-icon{width:50px;height:50px;border-radius:10px;background:#fff3e0;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
-.coupon-mine-info{flex:1}
-.coupon-mine-info h4{font-size:14px;margin-bottom:4px}
-.coupon-mine-info p{font-size:11px;color:#999}
-.coupon-mine-info .purchase-count{font-size:11px;color:#ff6b35;margin-top:2px}
-.coupon-mine-right{text-align:right}
-.coupon-mine-status{font-size:12px;padding:4px 10px;border-radius:12px;margin-bottom:4px;display:inline-block}
-.coupon-mine-status.unused{background:#e8f5e9;color:#4caf50}
-.coupon-mine-status.used{background:#f5f5f5;color:#999}
-.coupon-mine-status.expired{background:#f5f5f5;color:#bbb}
+/* 设置 */
+.settings-section{background:#fff;margin:12px;border-radius:12px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.08);border:1px solid #f0f0f0}
+.settings-section h4{font-size:14px;font-weight:600;padding:14px 16px;background:#f8f9ff}
+.settings-item{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid #f5f5f5}
+.settings-item:last-child{border-bottom:none}
+.settings-item .left{display:flex;align-items:center;gap:10px}
+.settings-item .icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.settings-item .text h5{font-size:14px;font-weight:400}
+.settings-item .text p{font-size:11px;color:#999;margin-top:2px}
+.settings-item .value{font-size:13px;color:#666}
+.settings-item .arrow{color:#ccc;font-size:16px}
+.settings-item input[type="number"],.settings-item input[type="text"],.settings-item select{padding:6px 12px;border:1px solid #ddd;border-radius:6px;font-size:13px;width:100px;text-align:right}
+.switch{width:44px;height:24px;background:#ddd;border-radius:12px;position:relative;cursor:pointer;transition:background .2s}
+.switch.on{background:#667eea}
+.switch::after{content:'';position:absolute;top:2px;left:2px;width:20px;height:20px;background:#fff;border-radius:50%;transition:left .2s}
+.switch.on::after{left:22px}
 
-/* 通用 */
-.section-title{display:flex;align-items:center;justify-content:space-between;padding:16px 16px 8px}
-.section-title h3{font-size:15px;font-weight:600}
-.section-title .more{font-size:12px;color:#999;cursor:pointer}
-.pattern-scroll{display:flex;gap:10px;padding:8px 16px 16px;overflow-x:auto}
-.pattern-card{min-width:120px;background:#fff;border-radius:10px;overflow:hidden;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.06)}
-.pattern-card-img{width:120px;height:120px;display:flex;align-items:center;justify-content:center;font-size:40px}
-.pattern-card-info{padding:8px}
-.pattern-card-info p{font-size:12px;font-weight:500;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tag{font-size:10px;padding:1px 6px;border-radius:4px}
-.tag-easy{background:#e8f5e9;color:#4caf50}
-.tag-medium{background:#fff3e0;color:#ff9800}
-.tag-hard{background:#ffebee;color:#f44336}
-.tag-time{background:#e3f2fd;color:#2196f3}
-.notice-bar{margin:0 16px 16px;background:#fff;border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:10px}
-.notice-content{flex:1;overflow:hidden}
-.notice-text{font-size:13px;color:#666;white-space:nowrap;animation:marquee 15s linear infinite}
-@keyframes marquee{0%{transform:translateX(100%)}100%{transform:translateX(-100%)}}
+/* AI智能体 */
+.ai-fab{position:fixed;bottom:20px;right:16px;width:56px;height:56px;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 16px rgba(102,126,234,.4);z-index:500;transition:transform .2s}
+.ai-fab:active{transform:scale(.9)}
+.ai-fab svg{width:28px;height:28px;fill:#fff}
+.ai-fab .pulse{position:absolute;width:100%;height:100%;border-radius:50%;background:rgba(102,126,234,.3);animation:aiPulse 2s ease infinite}
+@keyframes aiPulse{0%{transform:scale(1);opacity:1}100%{transform:scale(1.5);opacity:0}}
 
-.gallery-tabs{display:flex;background:#fff;padding:0 16px;overflow-x:auto;border-bottom:1px solid #eee}
-.gallery-tab{padding:12px 14px;font-size:14px;color:#666;cursor:pointer;white-space:nowrap;position:relative}
-.gallery-tab.active{color:#ff6b35;font-weight:600}
-.gallery-tab.active::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:20px;height:3px;background:#ff6b35;border-radius:2px}
-.search-bar{margin:12px 16px;background:#fff;border-radius:20px;padding:10px 16px;display:flex;align-items:center;gap:8px}
-.search-bar svg{width:16px;height:16px;fill:#999;flex-shrink:0}
-.search-bar input{flex:1;font-size:14px;background:transparent}
-.pattern-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:0 16px 16px}
-.pattern-grid-card{background:#fff;border-radius:10px;overflow:hidden;cursor:pointer;box-shadow:0 1px 6px rgba(0,0,0,.06)}
-.pattern-grid-img{width:100%;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:48px}
-.pattern-grid-info{padding:10px}
-.pattern-grid-info h4{font-size:13px;font-weight:500;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.pattern-grid-info .tags{display:flex;gap:4px;flex-wrap:wrap}
+.ai-panel{position:fixed;bottom:0;left:0;right:0;max-width:430px;margin:0 auto;background:#fff;border-radius:20px 20px 0 0;z-index:600;box-shadow:0 -4px 20px rgba(0,0,0,.1);transform:translateY(100%);transition:transform .3s ease;max-height:80vh;overflow-y:auto}
+.ai-panel.open{transform:translateY(0)}
+.ai-panel-header{padding:16px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #f0f0f0;position:sticky;top:0;background:#fff;z-index:1}
+.ai-panel-header h3{font-size:16px;font-weight:600;display:flex;align-items:center;gap:8px}
+.ai-panel-header h3 .ai-icon{font-size:20px}
+.ai-panel-close{width:32px;height:32px;border-radius:50%;background:#f5f5f5;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:#999}
+.ai-content{padding:16px 20px}
+.ai-summary{background:linear-gradient(135deg,#f0f4ff,#e8ecff);border-radius:12px;padding:16px;margin-bottom:16px}
+.ai-summary h4{font-size:14px;font-weight:600;margin-bottom:10px;color:#667eea}
+.ai-summary-item{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;font-size:13px;line-height:1.6}
+.ai-summary-item .dot{width:6px;height:6px;border-radius:50%;margin-top:7px;flex-shrink:0}
+.ai-summary-item .dot.red{background:#f44336}
+.ai-summary-item .dot.orange{background:#ff9800}
+.ai-summary-item .dot.green{background:#4caf50}
+.ai-summary-item .dot.blue{background:#2196f3}
+.ai-insight{background:#fff;border:1px solid #f0f0f0;border-radius:12px;padding:14px;margin-bottom:12px}
+.ai-insight h5{font-size:13px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.ai-insight p{font-size:12px;color:#666;line-height:1.6}
+.ai-insight .highlight{color:#667eea;font-weight:600}
+.ai-copy{display:block;width:100%;padding:12px;background:#667eea;color:#fff;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;text-align:center;margin-top:8px}
+.ai-copy:active{opacity:.8}
+.ai-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.3);z-index:599;display:none}
+.ai-overlay.show{display:block}
 
-.detail-img{width:100%;height:300px;display:flex;align-items:center;justify-content:center;font-size:80px}
-.detail-info{background:#fff;padding:16px;margin:-20px 16px 0;border-radius:16px;position:relative}
-.detail-info h2{font-size:18px;font-weight:600;margin-bottom:8px}
-.detail-meta{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
-.detail-desc{font-size:13px;color:#666;line-height:1.6;margin-bottom:12px}
-.detail-specs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
-.spec-item{text-align:center;background:#f8f8f8;padding:10px;border-radius:8px}
-.spec-item .label{font-size:11px;color:#999;margin-bottom:4px}
-.spec-item .value{font-size:14px;font-weight:600;color:#333}
-.detail-actions{display:flex;gap:10px}
-.detail-actions button{flex:1;padding:12px;border-radius:24px;font-size:14px;font-weight:600;cursor:pointer}
-.detail-actions button:active{opacity:.7}
-.btn-fav{background:#fff3e0;color:#ff6b35}
-.btn-share{background:#e3f2fd;color:#2196f3}
-.btn-save{background:linear-gradient(135deg,#ff6b35,#ff8f5e);color:#fff}
+/* 列表通用 */
+.list-header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#fff}
+.list-header h3{font-size:16px;font-weight:600}
+.list-header .add-btn{padding:8px 16px;background:#667eea;color:#fff;border-radius:20px;font-size:13px;cursor:pointer}
+.filter-bar{display:flex;gap:8px;padding:12px 16px;background:#fff;overflow-x:auto}
+.filter-item{padding:6px 14px;background:#f5f5f5;border-radius:16px;font-size:12px;color:#666;cursor:pointer;white-space:nowrap}
+.filter-item.active{background:#667eea;color:#fff}
+.search-bar{display:flex;gap:8px;padding:0 16px 12px;background:#fff}
+.search-bar input{flex:1;padding:10px 16px;background:#f5f5f5;border-radius:20px;font-size:14px}
 
-.select-section{background:#fff;margin:12px 16px;border-radius:12px;padding:16px}
-.select-section h4{font-size:15px;font-weight:600;margin-bottom:12px}
-.option-list{display:flex;flex-wrap:wrap;gap:10px}
-.option-item{padding:8px 18px;border-radius:20px;font-size:13px;background:#f5f5f5;color:#666;cursor:pointer;transition:all .2s;border:2px solid transparent}
-.option-item.selected{background:#fff3e0;color:#ff6b35;border-color:#ff6b35;font-weight:600}
-.btn-primary{display:block;width:calc(100% - 32px);margin:20px 16px;padding:14px;background:linear-gradient(135deg,#ff6b35,#ff8f5e);color:#fff;font-size:16px;font-weight:600;border-radius:24px;text-align:center;cursor:pointer;box-shadow:0 4px 12px rgba(255,107,53,.3)}
-.btn-primary:active{opacity:.8}
+/* 图纸/券/会员列表 */
+.pattern-list-item{background:#fff;margin:8px 12px;border-radius:12px;padding:12px;display:flex;gap:12px;box-shadow:0 1px 4px rgba(0,0,0,.08);border:1px solid #f0f0f0}
+.pattern-list-img{width:60px;height:60px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0}
+.pattern-list-info{flex:1}
+.pattern-list-info h4{font-size:14px;font-weight:500;margin-bottom:4px}
+.pattern-list-info .meta{font-size:11px;color:#999;margin-bottom:6px}
+.pattern-list-actions{display:flex;flex-direction:column;justify-content:center;gap:6px}
+.pattern-list-actions button{padding:5px 12px;border-radius:14px;font-size:11px;cursor:pointer;border:none}
+.pattern-list-actions .edit{background:#e3f2fd;color:#2196f3}
+.pattern-list-actions .delete{background:#ffebee;color:#f44336}
+.pattern-list-actions .pass{background:#e8f5e9;color:#4caf50}
 
-.member-header{background:linear-gradient(135deg,#ff6b35,#ff8f5e);padding:24px 16px;color:#fff;text-align:center}
-.member-avatar{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.3);margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:28px;border:3px solid rgba(255,255,255,.5)}
-.member-name{font-size:18px;font-weight:600;margin-bottom:4px}
-.member-level{display:inline-block;background:rgba(255,255,255,.2);padding:3px 12px;border-radius:12px;font-size:12px;margin-bottom:12px}
-.member-stats{display:flex;justify-content:center;gap:32px}
-.member-stat .num{font-size:22px;font-weight:700}
-.member-stat .label{font-size:11px;opacity:.8}
-.member-menu{background:#fff;margin:12px 16px;border-radius:12px;overflow:hidden}
-.member-menu-item{display:flex;align-items:center;padding:16px;cursor:pointer}
-.member-menu-item:active{background:#f8f8f8}
-.member-menu-item:not(:last-child){border-bottom:1px solid #f5f5f5}
-.member-menu-item .icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-right:12px}
-.member-menu-item .text{flex:1;font-size:14px}
-.member-menu-item .arrow{color:#ccc;font-size:14px}
+.coupon-list-item{background:#fff;margin:8px 12px;border-radius:12px;padding:12px;display:flex;align-items:center;gap:12px;box-shadow:0 1px 4px rgba(0,0,0,.08);border:1px solid #f0f0f0}
+.coupon-list-icon{width:50px;height:50px;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff}
+.coupon-list-info{flex:1}
+.coupon-list-info h4{font-size:14px;font-weight:500;margin-bottom:4px}
+.coupon-list-info .meta{font-size:11px;color:#999}
+.coupon-list-info .price{font-size:16px;font-weight:700;color:#f44336;margin-top:4px}
 
-.profile-header{background:linear-gradient(135deg,#ff6b35,#ff8f5e);padding:32px 16px 24px;text-align:center;color:#fff}
-.profile-avatar{width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,.3);margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:32px;border:3px solid rgba(255,255,255,.5)}
-.profile-name{font-size:18px;font-weight:600}
-.profile-id{font-size:12px;opacity:.7;margin-top:4px}
-.profile-menu{background:#fff;margin:12px 16px;border-radius:12px;overflow:hidden}
-.profile-menu-item{display:flex;align-items:center;padding:16px;cursor:pointer}
-.profile-menu-item:active{background:#f8f8f8}
-.profile-menu-item:not(:last-child){border-bottom:1px solid #f5f5f5}
-.profile-menu-item .icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;margin-right:12px}
-.profile-menu-item .text{flex:1;font-size:14px}
-.profile-menu-item .arrow{color:#ccc}
-.profile-menu-item .badge{background:#f44336;color:#fff;font-size:10px;padding:1px 6px;border-radius:8px;margin-right:8px}
-.logout-btn{margin:24px 16px;padding:14px;background:#fff;color:#f44336;font-size:15px;text-align:center;border-radius:12px;cursor:pointer}
+.member-list-item{background:#fff;margin:8px 12px;border-radius:12px;padding:12px;display:flex;align-items:center;gap:12px;box-shadow:0 1px 4px rgba(0,0,0,.08);border:1px solid #f0f0f0}
+.member-avatar{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px}
+.member-info{flex:1}
+.member-info h4{font-size:14px;font-weight:500;margin-bottom:4px}
+.member-info .meta{font-size:11px;color:#999}
+.member-level{font-size:11px;padding:3px 10px;border-radius:12px}
+.member-level.gold{background:#fff3e0;color:#ff9800}
+.member-level.silver{background:#f5f5f5;color:#9e9e9e}
+.member-points{text-align:right}
+.member-points .value{font-size:16px;font-weight:700;color:#667eea}
+.member-points .label{font-size:11px;color:#999}
 
-.upload-area{background:#fff;margin:16px;border-radius:12px;padding:32px;text-align:center;border:2px dashed #ddd;cursor:pointer}
-.upload-area svg{width:48px;height:48px;fill:#ccc;margin:0 auto 12px}
-.upload-area p{font-size:14px;color:#999}
-.form-group{margin-bottom:16px}
-.form-group label{display:block;font-size:14px;font-weight:500;margin-bottom:8px}
-.form-group input{width:100%;padding:12px 16px;border:1px solid #eee;border-radius:10px;font-size:14px;background:#f8f8f8}
-
-/* QR */
-.qr-container{text-align:center;padding:20px}
-.qr-code{width:180px;height:180px;background:#f5f5f5;margin:16px auto;display:flex;align-items:center;justify-content:center;border:1px solid #eee;border-radius:8px}
-.qr-code-text{font-size:18px;font-weight:700;letter-spacing:4px}
-.qr-tip{font-size:12px;color:#999;margin-top:8px}
+/* 订单列表 */
+.order-list-item{background:#fff;margin:8px 12px;border-radius:12px;padding:14px;box-shadow:0 1px 4px rgba(0,0,0,.08);border:1px solid #f0f0f0}
+.order-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.order-header .order-no{font-size:13px;color:#666}
+.order-header .status{font-size:11px;padding:3px 10px;border-radius:12px}
+.order-header .status.pending{background:#fff3e0;color:#ff9800}
+.order-header .status.verified{background:#e8f5e9;color:#4caf50}
+.order-header .status.cancelled{background:#ffebee;color:#f44336}
+.order-body{display:flex;gap:12px;margin-bottom:10px}
+.order-body .info{flex:1}
+.order-body .info h4{font-size:14px;font-weight:500;margin-bottom:4px}
+.order-body .info p{font-size:12px;color:#999}
+.order-footer{display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid #f5f5f5}
+.order-footer .channel{font-size:11px;color:#999}
+.order-footer .actions{display:flex;gap:6px}
+.order-footer .actions button{padding:5px 12px;border-radius:12px;font-size:11px;cursor:pointer;border:none}
+.order-footer .actions .verify{background:#4caf50;color:#fff}
+.order-footer .actions .cancel{background:#f5f5f5;color:#666}
 
 /* 弹窗 */
-.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:2000;display:none;align-items:flex-end;justify-content:center}
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:2000;display:none;align-items:center;justify-content:center;padding:20px}
 .modal-overlay.show{display:flex}
-.modal-content{background:#fff;width:100%;max-width:430px;border-radius:16px 16px 0 0;padding:24px;animation:slideUp .3s ease}
-@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
-.modal-title{font-size:16px;font-weight:600;text-align:center;margin-bottom:16px}
+.modal-content{background:#fff;width:100%;max-width:340px;border-radius:16px;overflow:hidden;animation:modalIn .3s ease}
+@keyframes modalIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+.modal-header{padding:20px 20px 12px;text-align:center}
+.modal-header .icon{width:48px;height:48px;border-radius:50%;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:24px}
+.modal-header .icon.success{background:#e8f5e9}
+.modal-header .icon.warning{background:#fff3e0}
+.modal-header .icon.danger{background:#ffebee}
+.modal-header h3{font-size:17px;font-weight:600}
+.modal-body{padding:0 20px 20px;text-align:center}
+.modal-body p{font-size:14px;color:#666;line-height:1.6}
+.modal-footer{display:flex;border-top:1px solid #eee}
+.modal-footer button{flex:1;padding:14px;font-size:15px;cursor:pointer;background:none}
+.modal-footer button.cancel{color:#999;border-right:1px solid #eee}
+.modal-footer button.confirm{color:#667eea;font-weight:600}
+.modal-footer button.danger{color:#f44336;font-weight:600}
 
 /* Toast */
 .toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.75);color:#fff;padding:12px 24px;border-radius:8px;font-size:14px;z-index:3000;display:none}
 .toast.show{display:block;animation:toastIn .3s ease}
 @keyframes toastIn{from{opacity:0;transform:translate(-50%,-50%) scale(.8)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
 
-/* 时段可预约 */
-.available-slots{margin:0 16px 12px}
-.available-slot{background:#fff;margin-bottom:8px;border-radius:10px;padding:12px;display:flex;align-items:center;gap:12px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
-.available-slot .time{font-size:14px;font-weight:600;width:50px}
-.available-slot .info{flex:1}
-.available-slot .info p{font-size:12px;color:#666}
-.available-slot .info .count{font-size:11px;color:#ff6b35}
-.available-slot .book-btn{padding:6px 14px;background:#ff6b35;color:#fff;border-radius:14px;font-size:12px;cursor:pointer}
+/* Loading */
+.loading-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(255,255,255,.9);z-index:2500;display:none;align-items:center;justify-content:center;flex-direction:column}
+.loading-overlay.show{display:flex}
+.loading-spinner{width:40px;height:40px;border:3px solid #f0f0f0;border-top-color:#667eea;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* 统计表格 */
+.stats-table{background:#fff;margin:12px;border-radius:12px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.08);border:1px solid #f0f0f0}
+.stats-table-header{display:flex;background:#f8f9ff;padding:12px 16px;font-size:12px;font-weight:600;color:#666}
+.stats-table-row{display:flex;padding:12px 16px;border-bottom:1px solid #f5f5f5;align-items:center}
+.stats-table-row:last-child{border-bottom:none}
+.stats-table-cell{flex:1;font-size:13px}
+.stats-table-cell.name{flex:2}
+.stats-table-cell.number{text-align:center}
+.stats-table-cell.rate{text-align:center}
+.stats-table-cell .up{color:#4caf50}
+.stats-table-cell .down{color:#f44336}
+
+/* 导出按钮组 */
+.export-btns{display:flex;gap:8px;padding:12px;flex-wrap:wrap}
+.export-btn{flex:1;min-width:calc(50% - 4px);padding:10px;background:#f0f4ff;color:#667eea;border-radius:10px;font-size:12px;text-align:center;cursor:pointer}
+.export-btn:active{opacity:.8}
+
+/* 违规账号列表 */
+.violation-list{background:#fff;margin:12px;border-radius:12px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.08);border:1px solid #f0f0f0}
+.violation-item{display:flex;align-items:center;padding:12px 16px;border-bottom:1px solid #f5f5f5}
+.violation-item:last-child{border-bottom:none}
+.violation-info{flex:1}
+.violation-info h4{font-size:14px;font-weight:500}
+.violation-info p{font-size:11px;color:#999;margin-top:2px}
+.violation-actions{display:flex;gap:8px}
+.violation-actions button{padding:5px 12px;border-radius:12px;font-size:11px;cursor:pointer;border:none}
+.violation-actions .unfreeze{background:#e8f5e9;color:#4caf50}
 </style>
 </head>
 <body>
 
-<!-- ==================== 首页 ==================== -->
-<div class="page active" id="page-home">
-  <div class="home-header">
-    <div class="home-header-top">
-      <div class="store-info">
-        <div class="store-logo">🧩</div>
-        <div>
-          <div class="store-name">滴爱歪·Hand in House拍照手工店</div>
-          <div class="store-hours">营业中 10:00-22:00</div>
+<!-- ==================== 登录页 ==================== -->
+<div class="page active login-page" id="page-login">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="icon">🧩</div>
+      <h1>拼豆DIY · 商家后台</h1>
+      <p>门店运营管理平台 V3.0</p>
+    </div>
+    <div class="login-form">
+      <div class="form-group">
+        <label>账号</label>
+        <input type="text" placeholder="请输入账号" value="admin">
+      </div>
+      <div class="form-group">
+        <label>密码</label>
+        <input type="password" placeholder="请输入密码" value="******">
+      </div>
+      <div class="remember">
+        <input type="checkbox" checked>
+        <span>记住密码</span>
+      </div>
+      <button class="login-btn" onclick="login()">登 录</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 全局顶部导航（所有页面共用） ==================== -->
+<div class="top-nav" id="globalTopNav" style="display:none;">
+  <div class="left">
+    <div class="menu-btn" onclick="toggleSidebar()">
+      <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+    </div>
+    <div class="title" id="pageTitle">数据看板</div>
+  </div>
+  <div class="right">
+    <div class="cb-switch">
+      <div class="cb-btn" onclick="goToC端()">C端</div>
+      <div class="cb-btn active">商家端</div>
+    </div>
+    <div class="avatar">店</div>
+  </div>
+</div>
+
+<!-- ==================== 侧边栏导航 ==================== -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="store-name">滴爱歪·Hand in House拍照手工店</div>
+    <div class="store-id">门店ID: 滴爱歪·Hand in House</div>
+  </div>
+  <div class="sidebar-menu">
+    <div class="sidebar-item active" onclick="navigateTo('page-dashboard');toggleSidebar()">
+      <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+      <span>数据看板</span>
+    </div>
+    <div class="sidebar-item" onclick="navigateTo('page-workspace');toggleSidebar()">
+      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+      <span>座位&队列管理</span>
+    </div>
+    <div class="sidebar-item" onclick="navigateTo('page-orders');toggleSidebar()">
+      <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+      <span>订单&大桌管理</span>
+      <span class="badge">12</span>
+    </div>
+    <div class="sidebar-item" onclick="navigateTo('page-patterns');toggleSidebar()">
+      <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+      <span>图纸审核管理</span>
+    </div>
+    <div class="sidebar-item" onclick="navigateTo('page-coupon-stats');toggleSidebar()">
+      <svg viewBox="0 0 24 24"><path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"/></svg>
+      <span>券&已购量统计</span>
+    </div>
+    <div class="sidebar-item" onclick="navigateTo('page-settings');toggleSidebar()">
+      <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L5.09 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.04.64.09.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+      <span>全局配置</span>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 模块1：全局配置 ==================== -->
+<div class="page" id="page-settings">
+  <div class="settings-section">
+    <h4>🏪 门店基础配置</h4>
+    <div class="settings-item">
+      <div class="left">
+        <div class="icon" style="background:#e3f2fd;">🕐</div>
+        <div class="text">
+          <h5>营业时段</h5>
+          <p>设置门店每日营业开始和结束时间</p>
         </div>
       </div>
-      <div class="header-right">
-        <div class="nav-btn" onclick="showToast('正在打开导航...')">
-          <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-          导航
+      <div class="value">
+        <select>
+          <option>10:00-22:00</option>
+          <option>09:00-21:00</option>
+          <option>08:00-20:00</option>
+        </select>
+      </div>
+    </div>
+    <div class="settings-item">
+      <div class="left">
+        <div class="icon" style="background:#fff3e0;">⏱️</div>
+        <div class="text">
+          <h5>时段切片时长</h5>
+          <p>预约时段的最小时间单位</p>
         </div>
-        <div class="cb-switch" onclick="switchCB(this)">
-          <div class="cb-btn active">C端</div>
-          <div class="cb-btn">商家端</div>
+      </div>
+      <div class="value">
+        <select>
+          <option>1小时</option>
+          <option>30分钟</option>
+          <option>2小时</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="settings-section">
+    <h4>📊 队列配额配置</h4>
+    <div class="settings-item">
+      <div class="left">
+        <div class="icon" style="background:#e8f5e9;">📱</div>
+        <div class="text">
+          <h5>线上队列配额比例</h5>
+          <p>小程序取号占总取号量的比例</p>
+        </div>
+      </div>
+      <div class="value">
+        <input type="number" value="60" style="width:60px;"> %
+      </div>
+    </div>
+    <div class="settings-item">
+      <div class="left">
+        <div class="icon" style="background:#f3e5f5;">🏪</div>
+        <div class="text">
+          <h5>线下队列配额比例</h5>
+          <p>门店现场取号占总取号量的比例</p>
+        </div>
+      </div>
+      <div class="value">
+        <input type="number" value="40" style="width:60px;"> %
+      </div>
+    </div>
+  </div>
+
+  <div class="settings-section">
+    <h4>🪑 大桌组队配置</h4>
+    <div class="settings-item">
+      <div class="left">
+        <div class="icon" style="background:#fce4ec;">👥</div>
+        <div class="text">
+          <h5>大桌最低人数阈值</h5>
+          <p>组队成功的最低人数要求</p>
+        </div>
+      </div>
+      <div class="value">
+        <input type="number" value="4" style="width:60px;"> 人
+      </div>
+    </div>
+    <div class="settings-item">
+      <div class="left">
+        <div class="icon" style="background:#fff8e1;">⏰</div>
+        <div class="text">
+          <h5>十分钟抢占时效</h5>
+          <p>开启后用户需在10分钟内确认座位</p>
+        </div>
+      </div>
+      <div class="switch on" onclick="toggleSwitch(this)"></div>
+    </div>
+  </div>
+
+  <div class="settings-section">
+    <h4>🛡️ 风控配置</h4>
+    <div class="settings-item">
+      <div class="left">
+        <div class="icon" style="background:#ffebee;">⚠️</div>
+        <div class="text">
+          <h5>月度违规阈值</h5>
+          <p>用户每月违规次数达到此值将触发风控</p>
+        </div>
+      </div>
+      <div class="value">
+        <input type="number" value="3" style="width:60px;"> 次
+      </div>
+    </div>
+  </div>
+
+  <div class="settings-section">
+    <h4>🚫 违规账号冻结管理</h4>
+    <div class="violation-list">
+      <div class="violation-item">
+        <div class="violation-info">
+          <h4>用户_PD_9527</h4>
+          <p>违规次数: 5次 | 冻结时间: 2026-05-01</p>
+        </div>
+        <div class="violation-actions">
+          <button class="unfreeze" onclick="showToast('账号已解冻')">解冻</button>
+        </div>
+      </div>
+      <div class="violation-item">
+        <div class="violation-info">
+          <h4>用户_PD_8848</h4>
+          <p>违规次数: 4次 | 冻结时间: 2026-05-03</p>
+        </div>
+        <div class="violation-actions">
+          <button class="unfreeze" onclick="showToast('账号已解冻')">解冻</button>
+        </div>
+      </div>
+      <div class="violation-item">
+        <div class="violation-info">
+          <h4>用户_PD_6666</h4>
+          <p>违规次数: 3次 | 冻结时间: 2026-05-05</p>
+        </div>
+        <div class="violation-actions">
+          <button class="unfreeze" onclick="showToast('账号已解冻')">解冻</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 模块2：座位&双队列管理看板 ==================== -->
+<div class="page" id="page-workspace">
+  <!-- 今日取号量 -->
+  <div class="stat-card primary" style="margin:12px;">
+    <div class="label" style="color:rgba(255,255,255,.8);">📊 今日取号量</div>
+    <div class="value">186</div>
+    <div style="display:flex;gap:20px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.2);">
+      <div>
+        <div style="font-size:12px;opacity:.8;">线上取号</div>
+        <div style="font-size:20px;font-weight:600;">112</div>
+      </div>
+      <div>
+        <div style="font-size:12px;opacity:.8;">线下取号</div>
+        <div style="font-size:20px;font-weight:600;">74</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 双队列实时看板（线上/线下独立分开） -->
+  <!-- 线上小程序排队队列 -->
+  <div class="queue-card">
+    <div class="queue-card-header">
+      <h4>📱 线上小程序排队队列</h4>
+      <span style="font-size:12px;padding:2px 8px;border-radius:10px;background:#e3f2fd;color:#2196f3;">实时</span>
+    </div>
+    <div class="queue-number">A052</div>
+    <div class="queue-info">
+      <div class="queue-info-item">
+        <div class="label">等待人数</div>
+        <div class="value" style="color:#f44336;">8人</div>
+      </div>
+      <div class="queue-info-item">
+        <div class="label">已服务</div>
+        <div class="value" style="color:#4caf50;">44人</div>
+      </div>
+      <div class="queue-info-item">
+        <div class="label">平均等待</div>
+        <div class="value">12分钟</div>
+      </div>
+    </div>
+    <div class="queue-actions">
+      <button class="queue-btn success" onclick="showToast('线上叫号成功：A053')">🔊 下一位</button>
+      <button class="queue-btn outline" onclick="showToast('已跳过当前号码')">⏭️ 跳过</button>
+      <button class="queue-btn danger" onclick="showToast('线上队列已暂停')">⏸️ 暂停</button>
+    </div>
+  </div>
+
+  <!-- 线下硬件设备排队队列 -->
+  <div class="queue-card">
+    <div class="queue-card-header">
+      <h4>🏪 线下硬件设备排队队列</h4>
+      <span style="font-size:12px;padding:2px 8px;border-radius:10px;background:#fff3e0;color:#ff9800;">实时</span>
+    </div>
+    <div class="queue-number">B031</div>
+    <div class="queue-info">
+      <div class="queue-info-item">
+        <div class="label">等待人数</div>
+        <div class="value" style="color:#f44336;">5人</div>
+      </div>
+      <div class="queue-info-item">
+        <div class="label">已服务</div>
+        <div class="value" style="color:#4caf50;">26人</div>
+      </div>
+      <div class="queue-info-item">
+        <div class="label">平均等待</div>
+        <div class="value">8分钟</div>
+      </div>
+    </div>
+    <div class="queue-actions">
+      <button class="queue-btn success" onclick="showToast('线下叫号成功：B032')">🔊 下一位</button>
+      <button class="queue-btn outline" onclick="showToast('已跳过当前号码')">⏭️ 跳过</button>
+      <button class="queue-btn danger" onclick="showToast('线下队列已暂停')">⏸️ 暂停</button>
+    </div>
+  </div>
+
+  <!-- 座位状态看板 -->
+  <div class="chart-section">
+    <div class="chart-header">
+      <h3>🪑 座位状态看板</h3>
+      <div style="display:flex;gap:12px;font-size:11px;">
+        <span style="display:flex;align-items:center;gap:4px;"><span style="width:8px;height:8px;background:#4caf50;border-radius:2px;"></span>空闲</span>
+        <span style="display:flex;align-items:center;gap:4px;"><span style="width:8px;height:8px;background:#ff9800;border-radius:2px;"></span>占用</span>
+        <span style="display:flex;align-items:center;gap:4px;"><span style="width:8px;height:8px;background:#f44336;border-radius:2px;"></span>锁定</span>
+        <span style="display:flex;align-items:center;gap:4px;"><span style="width:8px;height:8px;background:#2196f3;border-radius:2px;"></span>组队</span>
+      </div>
+    </div>
+    <div class="station-grid">
+      <div class="station-item">
+        <div class="name">A1</div>
+        <div class="status free">空闲</div>
+      </div>
+      <div class="station-item">
+        <div class="name">A2</div>
+        <div class="status busy">占用</div>
+      </div>
+      <div class="station-item">
+        <div class="name">A3</div>
+        <div class="status team">组队中</div>
+      </div>
+      <div class="station-item">
+        <div class="name">A4</div>
+        <div class="status free">空闲</div>
+      </div>
+      <div class="station-item">
+        <div class="name">B1</div>
+        <div class="status busy">占用</div>
+      </div>
+      <div class="station-item">
+        <div class="name">B2</div>
+        <div class="status locked">锁定</div>
+      </div>
+      <div class="station-item">
+        <div class="name">B3</div>
+        <div class="status free">空闲</div>
+      </div>
+      <div class="station-item">
+        <div class="name">B4</div>
+        <div class="status team">组队中</div>
+      </div>
+      <div class="station-item">
+        <div class="name">C1</div>
+        <div class="status busy">占用</div>
+      </div>
+      <div class="station-item">
+        <div class="name">C2</div>
+        <div class="status free">空闲</div>
+      </div>
+      <div class="station-item">
+        <div class="name">C3</div>
+        <div class="status free">空闲</div>
+      </div>
+      <div class="station-item">
+        <div class="name">C4</div>
+        <div class="status locked">锁定</div>
+      </div>
+      <div class="station-item">
+        <div class="name">D1</div>
+        <div class="status team">组队中</div>
+      </div>
+      <div class="station-item">
+        <div class="name">D2</div>
+        <div class="status busy">占用</div>
+      </div>
+      <div class="station-item">
+        <div class="name">D3</div>
+        <div class="status free">空闲</div>
+      </div>
+      <div class="station-item">
+        <div class="name">D4</div>
+        <div class="status free">空闲</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 模块3：订单&大桌组队管理 ==================== -->
+<div class="page" id="page-orders">
+  <!-- 导航栏 -->
+  <div class="queue-tabs" style="margin:12px 12px 0;">
+    <div class="queue-tab active" onclick="switchOrderTab(this,'orders')">📋 订单列表</div>
+    <div class="queue-tab" onclick="switchOrderTab(this,'teams')">🪑 大桌组队</div>
+    <div class="queue-tab" onclick="switchOrderTab(this,'control')">⚙️ 人工管控</div>
+  </div>
+
+  <!-- 订单列表 -->
+  <div id="orders-content">
+    <div class="filter-bar" style="margin:0 12px;">
+      <div class="filter-item active" onclick="switchOrderFilter(this,'all')">全部</div>
+      <div class="filter-item" onclick="switchOrderFilter(this,'online')">线上</div>
+      <div class="filter-item" onclick="switchOrderFilter(this,'offline')">线下</div>
+      <div class="filter-item" onclick="switchOrderFilter(this,'pending')">待核销</div>
+      <div class="filter-item" onclick="switchOrderFilter(this,'verified')">已核销</div>
+    </div>
+
+    <!-- 全部订单 -->
+    <div id="order-all" class="order-filter-content">
+      <div class="order-list-item">
+        <div class="order-header">
+          <span class="order-no">订单号：PD20260508001</span>
+          <span class="status pending">待核销</span>
+        </div>
+        <div class="order-body">
+          <div class="info">
+            <h4>单人1小时拼豆体验</h4>
+            <p>用户：微信用户_9527 | 预约：14:00-15:00</p>
+          </div>
+        </div>
+        <div class="order-footer">
+          <span class="channel">📱 线上小程序</span>
+          <div class="actions">
+            <button class="verify" onclick="showToast('订单已核销')">核销</button>
+            <button class="cancel" onclick="showToast('订单已取消')">取消</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="order-list-item">
+        <div class="order-header">
+          <span class="order-no">订单号：PD20260508002</span>
+          <span class="status verified">已核销</span>
+        </div>
+        <div class="order-body">
+          <div class="info">
+            <h4>双人1小时同行套餐</h4>
+            <p>用户：微信用户_8848 | 预约：13:00-15:00</p>
+          </div>
+        </div>
+        <div class="order-footer">
+          <span class="channel">🏪 线下门店</span>
+          <div class="actions">
+            <button class="cancel" onclick="showToast('查看详情')">详情</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="order-list-item">
+        <div class="order-header">
+          <span class="order-no">订单号：PD20260508003</span>
+          <span class="status pending">待核销</span>
+        </div>
+        <div class="order-body">
+          <div class="info">
+            <h4>单人全天不限时套餐</h4>
+            <p>用户：微信用户_6666 | 预约：15:00-17:00</p>
+          </div>
+        </div>
+        <div class="order-footer">
+          <span class="channel">📱 线上小程序</span>
+          <div class="actions">
+            <button class="verify" onclick="showToast('订单已核销')">核销</button>
+            <button class="cancel" onclick="showToast('订单已取消')">取消</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 线上订单 -->
+    <div id="order-online" class="order-filter-content" style="display:none;">
+      <div class="order-list-item">
+        <div class="order-header">
+          <span class="order-no">订单号：PD20260508001</span>
+          <span class="status pending">待核销</span>
+        </div>
+        <div class="order-body">
+          <div class="info">
+            <h4>单人1小时拼豆体验</h4>
+            <p>用户：微信用户_9527 | 预约：14:00-15:00</p>
+          </div>
+        </div>
+        <div class="order-footer">
+          <span class="channel">📱 线上小程序</span>
+          <div class="actions">
+            <button class="verify" onclick="showToast('订单已核销')">核销</button>
+            <button class="cancel" onclick="showToast('订单已取消')">取消</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="order-list-item">
+        <div class="order-header">
+          <span class="order-no">订单号：PD20260508003</span>
+          <span class="status pending">待核销</span>
+        </div>
+        <div class="order-body">
+          <div class="info">
+            <h4>单人全天不限时套餐</h4>
+            <p>用户：微信用户_6666 | 预约：15:00-17:00</p>
+          </div>
+        </div>
+        <div class="order-footer">
+          <span class="channel">📱 线上小程序</span>
+          <div class="actions">
+            <button class="verify" onclick="showToast('订单已核销')">核销</button>
+            <button class="cancel" onclick="showToast('订单已取消')">取消</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 线下订单 -->
+    <div id="order-offline" class="order-filter-content" style="display:none;">
+      <div class="order-list-item">
+        <div class="order-header">
+          <span class="order-no">订单号：PD20260508002</span>
+          <span class="status verified">已核销</span>
+        </div>
+        <div class="order-body">
+          <div class="info">
+            <h4>双人1小时同行套餐</h4>
+            <p>用户：微信用户_8848 | 预约：13:00-15:00</p>
+          </div>
+        </div>
+        <div class="order-footer">
+          <span class="channel">🏪 线下门店</span>
+          <div class="actions">
+            <button class="cancel" onclick="showToast('查看详情')">详情</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="order-list-item">
+        <div class="order-header">
+          <span class="order-no">订单号：PD20260508005</span>
+          <span class="status verified">已核销</span>
+        </div>
+        <div class="order-body">
+          <div class="info">
+            <h4>单人1小时拼豆体验</h4>
+            <p>用户：微信用户_7777 | 预约：10:00-11:00</p>
+          </div>
+        </div>
+        <div class="order-footer">
+          <span class="channel">🏪 线下门店</span>
+          <div class="actions">
+            <button class="cancel" onclick="showToast('查看详情')">详情</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 待核销订单 -->
+    <div id="order-pending" class="order-filter-content" style="display:none;">
+      <div class="order-list-item">
+        <div class="order-header">
+          <span class="order-no">订单号：PD20260508001</span>
+          <span class="status pending">待核销</span>
+        </div>
+        <div class="order-body">
+          <div class="info">
+            <h4>单人1小时拼豆体验</h4>
+            <p>用户：微信用户_9527 | 预约：14:00-15:00</p>
+          </div>
+        </div>
+        <div class="order-footer">
+          <span class="channel">📱 线上小程序</span>
+          <div class="actions">
+            <button class="verify" onclick="showToast('订单已核销')">核销</button>
+            <button class="cancel" onclick="showToast('订单已取消')">取消</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="order-list-item">
+        <div class="order-header">
+          <span class="order-no">订单号：PD20260508003</span>
+          <span class="status pending">待核销</span>
+        </div>
+        <div class="order-body">
+          <div class="info">
+            <h4>单人全天不限时套餐</h4>
+            <p>用户：微信用户_6666 | 预约：15:00-17:00</p>
+          </div>
+        </div>
+        <div class="order-footer">
+          <span class="channel">📱 线上小程序</span>
+          <div class="actions">
+            <button class="verify" onclick="showToast('订单已核销')">核销</button>
+            <button class="cancel" onclick="showToast('订单已取消')">取消</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="order-list-item">
+        <div class="order-header">
+          <span class="order-no">订单号：PD20260508006</span>
+          <span class="status pending">待核销</span>
+        </div>
+        <div class="order-body">
+          <div class="info">
+            <h4>双人1小时同行套餐</h4>
+            <p>用户：微信用户_3333 | 预约：16:00-18:00</p>
+          </div>
+        </div>
+        <div class="order-footer">
+          <span class="channel">📱 线上小程序</span>
+          <div class="actions">
+            <button class="verify" onclick="showToast('订单已核销')">核销</button>
+            <button class="cancel" onclick="showToast('订单已取消')">取消</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 已核销订单 -->
+    <div id="order-verified" class="order-filter-content" style="display:none;">
+      <div class="order-list-item">
+        <div class="order-header">
+          <span class="order-no">订单号：PD20260508002</span>
+          <span class="status verified">已核销</span>
+        </div>
+        <div class="order-body">
+          <div class="info">
+            <h4>双人1小时同行套餐</h4>
+            <p>用户：微信用户_8848 | 预约：13:00-15:00</p>
+          </div>
+        </div>
+        <div class="order-footer">
+          <span class="channel">🏪 线下门店</span>
+          <div class="actions">
+            <button class="cancel" onclick="showToast('查看详情')">详情</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="order-list-item">
+        <div class="order-header">
+          <span class="order-no">订单号：PD20260508005</span>
+          <span class="status verified">已核销</span>
+        </div>
+        <div class="order-body">
+          <div class="info">
+            <h4>单人1小时拼豆体验</h4>
+            <p>用户：微信用户_7777 | 预约：10:00-11:00</p>
+          </div>
+        </div>
+        <div class="order-footer">
+          <span class="channel">🏪 线下门店</span>
+          <div class="actions">
+            <button class="cancel" onclick="showToast('查看详情')">详情</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="order-list-item">
+        <div class="order-header">
+          <span class="order-no">订单号：PD20260508004</span>
+          <span class="status verified">已核销</span>
+        </div>
+        <div class="order-body">
+          <div class="info">
+            <h4>单人全天不限时套餐</h4>
+            <p>用户：微信用户_5555 | 预约：09:00-12:00</p>
+          </div>
+        </div>
+        <div class="order-footer">
+          <span class="channel">📱 线上小程序</span>
+          <div class="actions">
+            <button class="cancel" onclick="showToast('查看详情')">详情</button>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="banner-wrap">
-    <div class="banner-track" id="bannerTrack">
-      <div class="banner-slide">🎉 新店开业 全场8折</div>
-      <div class="banner-slide">🪑 大桌组队 3人同行享优惠</div>
-      <div class="banner-slide">⭐ 热门图纸推荐 小白也能做</div>
-    </div>
-    <div class="banner-dots">
-      <div class="banner-dot active" onclick="goSlide(0)"></div>
-      <div class="banner-dot" onclick="goSlide(1)"></div>
-      <div class="banner-dot" onclick="goSlide(2)"></div>
-    </div>
-  </div>
-
-  <div class="func-grid">
-    <div class="func-item" onclick="switchTab(1)"><div class="func-icon" style="background:#fff3e0;">📚</div><span>图纸图库</span></div>
-    <div class="func-item" onclick="navigateTo('page-queue-get')"><div class="func-icon" style="background:#e3f2fd;">🎫</div><span>一键叫号</span></div>
-    <div class="func-item" onclick="navigateTo('page-booking')"><div class="func-icon" style="background:#e8f5e9;">📅</div><span>时段预约</span></div>
-    <div class="func-item" onclick="navigateTo('page-seat')"><div class="func-icon" style="background:#f3e5f5;">🪑</div><span>选座组队</span></div>
-    <div class="func-item" onclick="navigateTo('page-verify')"><div class="func-icon" style="background:#e0f2f1;">✅</div><span>券码核销</span></div>
-    <div class="func-item" onclick="switchTab(3)"><div class="func-icon" style="background:#fce4ec;">🏷️</div><span>我的券包</span></div>
-  </div>
-
-  <div class="section-title"><h3>🔥 热门图纸推荐</h3><div class="more" onclick="switchTab(1)">查看全部 ›</div></div>
-  <div class="pattern-scroll">
-    <div class="pattern-card" onclick="navigateTo('page-detail')"><div class="pattern-card-img" style="background:#e8f5e9;">🐱</div><div class="pattern-card-info"><p>可爱小猫咪</p><div><span class="tag tag-easy">简单</span> <span class="tag tag-time">1h</span></div></div></div>
-    <div class="pattern-card" onclick="navigateTo('page-detail')"><div class="pattern-card-img" style="background:#fff3e0;">🌸</div><div class="pattern-card-info"><p>樱花小熊</p><div><span class="tag tag-medium">中等</span> <span class="tag tag-time">2h</span></div></div></div>
-    <div class="pattern-card" onclick="navigateTo('page-detail')"><div class="pattern-card-img" style="background:#e3f2fd;">🦄</div><div class="pattern-card-info"><p>独角兽</p><div><span class="tag tag-hard">困难</span> <span class="tag tag-time">3h</span></div></div></div>
-    <div class="pattern-card" onclick="navigateTo('page-detail')"><div class="pattern-card-img" style="background:#fce4ec;">🐰</div><div class="pattern-card-info"><p>垂耳兔</p><div><span class="tag tag-easy">简单</span> <span class="tag tag-time">1.5h</span></div></div></div>
-  </div>
-
-  <!-- 今日可预约时段 -->
-  <div class="section-title"><h3>📅 今日可预约时段</h3></div>
-  <div class="available-slots">
-    <div class="available-slot"><div class="time">10:00</div><div class="info"><p>拼豆体验 · 1h</p><div class="count">已购42份 · 剩余3工位</div></div><div class="book-btn" onclick="navigateTo('page-booking')">预约</div></div>
-    <div class="available-slot"><div class="time">11:00</div><div class="info"><p>创意拼画 · 2h</p><div class="count">已购28份 · 剩余6工位</div></div><div class="book-btn" onclick="navigateTo('page-booking')">预约</div></div>
-    <div class="available-slot"><div class="time">14:00</div><div class="info"><p>亲子DIY · 2h</p><div class="count">已购85份 · 剩余1工位</div></div><div class="book-btn" onclick="navigateTo('page-booking')">预约</div></div>
-    <div class="available-slot"><div class="time">16:00</div><div class="info"><p>大桌组队 · 半天</p><div class="count">已购12份 · 剩余2大桌</div></div><div class="book-btn" onclick="navigateTo('page-seat')">选座</div></div>
-  </div>
-
-  <div class="notice-bar"><div style="font-size:18px;">📢</div><div class="notice-content"><div class="notice-text">【公告】五一假期营业时间调整为 9:00-23:00，大桌组队3人同行享8折优惠！</div></div></div>
-</div>
-
-<!-- ==================== 图库 ==================== -->
-<div class="page" id="page-gallery">
-  <div class="navbar"><div class="navbar-title">拼豆图纸图库</div></div>
-  <div class="gallery-tabs" id="galleryTabs">
-    <div class="gallery-tab active" onclick="switchGalleryTab(this)">全部</div>
-    <div class="gallery-tab" onclick="switchGalleryTab(this)">🐾 动物</div>
-    <div class="gallery-tab" onclick="switchGalleryTab(this)">👤 人物</div>
-    <div class="gallery-tab" onclick="switchGalleryTab(this)">🎨 卡通</div>
-    <div class="gallery-tab" onclick="switchGalleryTab(this)">🌱 新手入门</div>
-  </div>
-  <div class="search-bar"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg><input type="text" placeholder="搜索图纸名称、标签..."></div>
-  <div style="display:flex;gap:8px;padding:0 16px 8px;">
-    <div class="option-item selected" onclick="switchMyPattern(this,'grid')">图纸列表</div>
-    <div class="option-item" onclick="switchMyPattern(this,'mine')">我的图纸</div>
-  </div>
-  <div class="pattern-grid" id="patternGrid">
-    <div class="pattern-grid-card" onclick="navigateTo('page-detail')"><div class="pattern-grid-img" style="background:#e8f5e9;">🐱</div><div class="pattern-grid-info"><h4>可爱小猫咪</h4><div class="tags"><span class="tag tag-easy">简单</span><span class="tag tag-time">1h</span></div></div></div>
-    <div class="pattern-grid-card" onclick="navigateTo('page-detail')"><div class="pattern-grid-img" style="background:#fff3e0;">🌸</div><div class="pattern-grid-info"><h4>樱花小熊</h4><div class="tags"><span class="tag tag-medium">中等</span><span class="tag tag-time">2h</span></div></div></div>
-    <div class="pattern-grid-card" onclick="navigateTo('page-detail')"><div class="pattern-grid-img" style="background:#e3f2fd;">🦄</div><div class="pattern-grid-info"><h4>独角兽</h4><div class="tags"><span class="tag tag-hard">困难</span><span class="tag tag-time">3h</span></div></div></div>
-    <div class="pattern-grid-card" onclick="navigateTo('page-detail')"><div class="pattern-grid-img" style="background:#fce4ec;">🐰</div><div class="pattern-grid-info"><h4>垂耳兔</h4><div class="tags"><span class="tag tag-easy">简单</span><span class="tag tag-time">1.5h</span></div></div></div>
-    <div class="pattern-grid-card" onclick="navigateTo('page-detail')"><div class="pattern-grid-img" style="background:#f3e5f5;">🏰</div><div class="pattern-grid-info"><h4>迪士尼城堡</h4><div class="tags"><span class="tag tag-hard">困难</span><span class="tag tag-time">4h</span></div></div></div>
-    <div class="pattern-grid-card" onclick="navigateTo('page-detail')"><div class="pattern-grid-img" style="background:#e0f7fa;">🐸</div><div class="pattern-grid-info"><h4>青蛙王子</h4><div class="tags"><span class="tag tag-medium">中等</span><span class="tag tag-time">2h</span></div></div></div>
-  </div>
-  <div id="myPatternContent" style="display:none;">
-    <div class="coupon-tabs"><div class="coupon-tab active">浏览历史</div><div class="coupon-tab">我的收藏</div></div>
-    <div class="pattern-grid">
-      <div class="pattern-grid-card" onclick="navigateTo('page-detail')"><div class="pattern-grid-img" style="background:#e8f5e9;">🐱</div><div class="pattern-grid-info"><h4>可爱小猫咪</h4><div class="tags"><span class="tag tag-easy">简单</span></div></div></div>
-      <div class="pattern-grid-card" onclick="navigateTo('page-detail')"><div class="pattern-grid-img" style="background:#e3f2fd;">🦄</div><div class="pattern-grid-info"><h4>独角兽</h4><div class="tags"><span class="tag tag-hard">困难</span></div></div></div>
-    </div>
-  </div>
-</div>
-
-<!-- ==================== 图纸详情 ==================== -->
-<div class="page" id="page-detail">
-  <div class="navbar">
-    <div class="navbar-back" onclick="goBack()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></div>
-    <div class="navbar-title">图纸详情</div>
-    <div class="navbar-back" onclick="showToast('已分享')"><svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg></div>
-  </div>
-  <div class="detail-img" style="background:linear-gradient(135deg,#e8f5e9,#c8e6c9);">🐱</div>
-  <div class="detail-info">
-    <h2>可爱小猫咪</h2>
-    <div class="detail-meta"><span class="tag tag-easy">简单</span><span class="tag tag-time">约1小时</span><span class="tag" style="background:#f3e5f5;color:#9c27b0;">动物</span></div>
-    <div class="detail-desc">适合新手的可爱小猫咪拼豆图纸，使用基础拼豆板即可完成。包含详细颜色编号和排列说明。</div>
-    <div class="detail-specs">
-      <div class="spec-item"><div class="label">建议尺寸</div><div class="value">10×10cm</div></div>
-      <div class="spec-item"><div class="label">拼豆数量</div><div class="value">约200颗</div></div>
-      <div class="spec-item"><div class="label">颜色数</div><div class="value">8色</div></div>
-    </div>
-    <div class="detail-actions">
-      <button class="btn-fav" onclick="toggleFav(this)">❤️ 收藏</button>
-      <button class="btn-share" onclick="showToast('分享链接已复制')">🔗 分享</button>
-      <button class="btn-save" onclick="showToast('图片已保存')">💾 保存</button>
-    </div>
-  </div>
-</div>
-
-<!-- ==================== 排队叫号 ==================== -->
-<div class="page" id="page-queue-get">
-  <div class="navbar">
-    <div class="navbar-back" onclick="goBack()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></div>
-    <div class="navbar-title">一键取号</div>
-    <div style="width:28px;"></div>
-  </div>
-  <div class="select-section">
-    <h4>选择DIY项目</h4>
-    <div class="option-list" id="projectOptions">
-      <div class="option-item selected" onclick="selectOption(this,'projectOptions')">🧩 拼豆体验</div>
-      <div class="option-item" onclick="selectOption(this,'projectOptions')">🎨 创意拼画</div>
-      <div class="option-item" onclick="selectOption(this,'projectOptions')">🖼️ 拼豆挂件</div>
-      <div class="option-item" onclick="selectOption(this,'projectOptions')">🔑 钥匙扣定制</div>
-    </div>
-  </div>
-  <div class="select-section">
-    <h4>选择体验时长</h4>
-    <div class="option-list" id="durationOptions">
-      <div class="option-item selected" onclick="selectOption(this,'durationOptions')">⏱️ 1小时</div>
-      <div class="option-item" onclick="selectOption(this,'durationOptions')">⏱️ 2小时</div>
-      <div class="option-item" onclick="selectOption(this,'durationOptions')">⏱️ 半天(4h)</div>
-      <div class="option-item" onclick="selectOption(this,'durationOptions')">⏱️ 全天</div>
-    </div>
-  </div>
-  <div class="btn-primary" onclick="navigateTo('page-queue-wait')">🎫 立即取号</div>
-</div>
-
-<!-- ==================== 排队等待 ==================== -->
-<div class="page" id="page-queue-wait">
-  <div class="navbar">
-    <div class="navbar-back" onclick="goBack()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></div>
-    <div class="navbar-title">排队等待</div>
-    <div style="width:28px;"></div>
-  </div>
-  <div style="background:#fff;margin:16px;border-radius:16px;padding:24px;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,.08);">
-    <h3 style="font-size:16px;color:#666;margin-bottom:16px;">您的排队号码</h3>
-    <div style="font-size:56px;font-weight:700;color:#ff6b35;line-height:1;">A037</div>
-    <p style="color:#999;font-size:13px;margin-top:8px;">拼豆体验 · 1小时</p>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px;">
-      <div style="background:#f8f8f8;padding:12px;border-radius:10px;"><div style="font-size:11px;color:#999;">当前叫号</div><div style="font-size:18px;font-weight:700;">A032</div></div>
-      <div style="background:#f8f8f8;padding:12px;border-radius:10px;"><div style="font-size:11px;color:#999;">前方等待</div><div style="font-size:18px;font-weight:700;">5人</div></div>
-      <div style="background:#f8f8f8;padding:12px;border-radius:10px;"><div style="font-size:11px;color:#999;">预计等待</div><div style="font-size:18px;font-weight:700;">25分</div></div>
-    </div>
-  </div>
-  <div style="padding:0 16px;display:flex;gap:10px;">
-    <div class="btn-primary" style="flex:1;margin:0;background:#fff;color:#ff6b35;border:2px solid #ff6b35;box-shadow:none;" onclick="navigateTo('page-seat')">🪑 自主选座</div>
-    <div class="btn-primary" style="flex:1;margin:0;" onclick="showToast('已取消排队')">❌ 取消排队</div>
-  </div>
-</div>
-
-<!-- ==================== 时段预约（纯1小时时块+多选） ==================== -->
-<div class="page" id="page-booking">
-  <div class="navbar">
-    <div class="navbar-back" onclick="goBack()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></div>
-    <div class="navbar-title">时段预约</div>
-    <div style="width:28px;"></div>
-  </div>
-
-  <!-- 已购量汇总 -->
-  <div style="background:#fff;margin:12px 16px;border-radius:12px;padding:14px;box-shadow:0 1px 4px rgba(0,0,0,.04);">
-    <h4 style="font-size:14px;font-weight:600;margin-bottom:10px;">📊 今日套餐已购量</h4>
-    <div style="display:flex;gap:8px;margin-bottom:8px;">
-      <div style="flex:1;background:#f8f8f8;border-radius:8px;padding:10px;text-align:center;"><div style="font-size:11px;color:#999;">单人体验</div><div style="font-size:16px;font-weight:700;color:#ff9800;">42</div></div>
-      <div style="flex:1;background:#f8f8f8;border-radius:8px;padding:10px;text-align:center;"><div style="font-size:11px;color:#999;">双人同行</div><div style="font-size:16px;font-weight:700;color:#4caf50;">28</div></div>
-      <div style="flex:1;background:#f8f8f8;border-radius:8px;padding:10px;text-align:center;"><div style="font-size:11px;color:#999;">亲子DIY</div><div style="font-size:16px;font-weight:700;color:#f44336;">85</div></div>
-    </div>
-  </div>
-
-  <!-- 选择日期 -->
-  <div style="background:#fff;margin:0 16px 10px;border-radius:12px;padding:14px;box-shadow:0 1px 4px rgba(0,0,0,.04);">
-    <h4 style="font-size:14px;font-weight:600;margin-bottom:10px;">📅 选择日期</h4>
-    <div style="display:flex;gap:8px;">
-      <div class="option-item selected" onclick="selectOption(this,'dateOptions')" style="flex:1;text-align:center;">今天 5/8</div>
-      <div class="option-item" onclick="selectOption(this,'dateOptions')" style="flex:1;text-align:center;">明天 5/9</div>
-      <div class="option-item" onclick="selectOption(this,'dateOptions')" style="flex:1;text-align:center;">后天 5/10</div>
-    </div>
-  </div>
-
-  <!-- 1小时时块选择（多选） -->
-  <div style="background:#fff;margin:0 16px 10px;border-radius:12px;padding:14px;box-shadow:0 1px 4px rgba(0,0,0,.04);">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-      <h4 style="font-size:14px;font-weight:600;">⏰ 选择时段（每小时一块）</h4>
-      <div id="selectedCount" style="font-size:12px;color:#ff6b35;font-weight:600;">已选 0 块</div>
-    </div>
-    <p style="font-size:11px;color:#999;margin-bottom:12px;">💡 多选多个连续时段即可预约多小时，如选14:00+15:00=预约2小时</p>
-    <div class="time-slots" id="bookingSlots">
-      <div class="time-slot disabled"><div class="time">10:00</div><div class="status">已满</div></div>
-      <div class="time-slot disabled"><div class="time">11:00</div><div class="status">已满</div></div>
-      <div class="time-slot" onclick="toggleSlot(this)"><div class="time">12:00</div><div class="status">剩5位</div></div>
-      <div class="time-slot" onclick="toggleSlot(this)"><div class="time">13:00</div><div class="status">剩4位</div></div>
-      <div class="time-slot" onclick="toggleSlot(this)"><div class="time">14:00</div><div class="status">剩2位</div></div>
-      <div class="time-slot disabled"><div class="time">15:00</div><div class="status">已满</div></div>
-      <div class="time-slot" onclick="toggleSlot(this)"><div class="time">16:00</div><div class="status">剩6位</div></div>
-      <div class="time-slot" onclick="toggleSlot(this)"><div class="time">17:00</div><div class="status">剩8位</div></div>
-      <div class="time-slot" onclick="toggleSlot(this)"><div class="time">18:00</div><div class="status">剩7位</div></div>
-      <div class="time-slot" onclick="toggleSlot(this)"><div class="time">19:00</div><div class="status">剩9位</div></div>
-      <div class="time-slot" onclick="toggleSlot(this)"><div class="time">20:00</div><div class="status">剩10位</div></div>
-      <div class="time-slot" onclick="toggleSlot(this)"><div class="time">21:00</div><div class="status">剩8位</div></div>
-    </div>
-  </div>
-
-  <!-- 预约摘要 -->
-  <div id="bookingSummary" style="background:#fff;margin:0 16px 10px;border-radius:12px;padding:14px;box-shadow:0 1px 4px rgba(0,0,0,.04);display:none;">
-    <h4 style="font-size:14px;font-weight:600;margin-bottom:8px;">📋 预约摘要</h4>
-    <div id="summaryContent" style="font-size:13px;color:#666;line-height:1.8;"></div>
-  </div>
-
-  <div class="btn-primary" onclick="submitBooking()">✅ 确认预约</div>
-</div>
-
-<!-- ==================== 自主选座 + 大桌组队 ==================== -->
-<div class="page" id="page-seat">
-  <div class="navbar">
-    <div class="navbar-back" onclick="goBack()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></div>
-    <div class="navbar-title">自主选座</div>
-    <div style="width:28px;"></div>
-  </div>
-
-  <!-- 大桌组队卡片 -->
-  <div class="team-card">
-    <h4>🪑 大桌组队 · D1号桌</h4>
-    <div class="team-info">
-      <div class="team-avatar" style="background:#e3f2fd;">😊</div>
-      <div class="team-detail">
-        <div class="name">张小明 发起了组队</div>
-        <div class="meta">亲子DIY套餐 · 需4人 · 当日已购85份</div>
+  <!-- 大桌组队管理 -->
+  <div id="teams-content" style="display:none;">
+    <div class="team-manage-card" style="margin:12px;">
+      <div class="team-manage-header">
+        <h4>D1号大桌</h4>
+        <span class="status active">组队中</span>
+      </div>
+      <div class="team-manage-body">
+        <div style="font-size:13px;color:#666;">当前组队：</div>
+        <div class="members">
+          <span class="team-member-tag">张小明</span>
+          <span class="team-member-tag">李小红</span>
+          <span class="team-member-tag">王小华</span>
+        </div>
+      </div>
+      <div class="team-manage-footer">
+        <div class="purchase-info">👥 3/4人 | 锁定剩余：8分钟 | 关联套餐：单人全天（今日已购85份）</div>
+        <div class="actions">
+          <button style="background:#ffebee;color:#f44336;" onclick="showToast('组队已撤销')">撤销组队</button>
+        </div>
       </div>
     </div>
-    <div class="team-members">
-      <div class="team-member"><div class="avatar">😊</div>张小明(发起人)</div>
-      <div class="team-member"><div class="avatar">🌸</div>李小花</div>
-      <div class="team-member"><div class="avatar">🦄</div>王小明</div>
-      <div class="team-member" style="background:#fff3e0;color:#ff9800;">+1 加入</div>
-    </div>
-    <div class="team-progress">
-      <div class="label"><span>组队进度</span><span>3/4人</span></div>
-      <div class="team-progress-bar"><div class="team-progress-fill" style="width:75%"></div></div>
-    </div>
-    <div style="font-size:11px;color:#ff9800;margin-bottom:12px;">⏰ 距自动释放还有 8分钟，还差1人即可锁定</div>
-    <div class="team-actions">
-      <div class="team-btn primary" onclick="showToast('已加入组队！')">加入组队</div>
-      <div class="team-btn outline" onclick="showShareModal()">🔗 分享邀请</div>
-    </div>
-  </div>
 
-  <div style="background:#fff;margin:12px 16px;border-radius:12px;padding:20px;">
-    <div class="seat-legend">
-      <div class="legend-item"><div class="legend-dot free"></div>空闲</div>
-      <div class="legend-item"><div class="legend-dot occupied"></div>占用</div>
-      <div class="legend-item"><div class="legend-dot big"></div>大桌</div>
-      <div class="legend-item"><div class="legend-dot locked"></div>锁定</div>
-      <div class="legend-item"><div class="legend-dot selected"></div>已选</div>
-    </div>
-    <div style="text-align:center;font-size:12px;color:#999;margin-bottom:12px;">—— 入口 ——</div>
-    <div class="seats-grid">
-      <div class="seat free" onclick="selectSeat(this)"><svg viewBox="0 0 24 24" style="fill:#4caf50"><path d="M20 21H4c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2v14c0 1.1-.9 2-2 2zM4 5v14h16V5H4z"/></svg>A1</div>
-      <div class="seat occupied"><svg viewBox="0 0 24 24" style="fill:#f44336"><path d="M20 21H4c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2v14c0 1.1-.9 2-2 2zM4 5v14h16V5H4z"/></svg>A2</div>
-      <div class="seat free" onclick="selectSeat(this)"><svg viewBox="0 0 24 24" style="fill:#4caf50"><path d="M20 21H4c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2v14c0 1.1-.9 2-2 2zM4 5v14h16V5H4z"/></svg>A3</div>
-      <div class="seat free" onclick="selectSeat(this)"><svg viewBox="0 0 24 24" style="fill:#4caf50"><path d="M20 21H4c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2v14c0 1.1-.9 2-2 2zM4 5v14h16V5H4z"/></svg>A4</div>
-      <div class="seat free" onclick="selectSeat(this)"><svg viewBox="0 0 24 24" style="fill:#4caf50"><path d="M20 21H4c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2v14c0 1.1-.9 2-2 2zM4 5v14h16V5H4z"/></svg>B1</div>
-      <div class="seat free" onclick="selectSeat(this)"><svg viewBox="0 0 24 24" style="fill:#4caf50"><path d="M20 21H4c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2v14c0 1.1-.9 2-2 2zM4 5v14h16V5H4z"/></svg>B2</div>
-      <div class="seat big" onclick="selectSeat(this)"><svg viewBox="0 0 24 24" style="fill:#2196f3"><path d="M20 21H4c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2v14c0 1.1-.9 2-2 2zM4 5v14h16V5H4z"/></svg>D1大桌</div>
-      <div class="seat big" onclick="selectSeat(this)"><svg viewBox="0 0 24 24" style="fill:#2196f3"><path d="M20 21H4c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2v14c0 1.1-.9 2-2 2zM4 5v14h16V5H4z"/></svg>D2大桌</div>
-      <div class="seat occupied"><svg viewBox="0 0 24 24" style="fill:#f44336"><path d="M20 21H4c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2v14c0 1.1-.9 2-2 2zM4 5v14h16V5H4z"/></svg>C1</div>
-      <div class="seat free" onclick="selectSeat(this)"><svg viewBox="0 0 24 24" style="fill:#4caf50"><path d="M20 21H4c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2v14c0 1.1-.9 2-2 2zM4 5v14h16V5H4z"/></svg>C2</div>
-      <div class="seat locked"><svg viewBox="0 0 24 24" style="fill:#bbb"><path d="M20 21H4c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2v14c0 1.1-.9 2-2 2zM4 5v14h16V5H4z"/></svg>C3</div>
-      <div class="seat free" onclick="selectSeat(this)"><svg viewBox="0 0 24 24" style="fill:#4caf50"><path d="M20 21H4c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2v14c0 1.1-.9 2-2 2zM4 5v14h16V5H4z"/></svg>C4</div>
-    </div>
-  </div>
-  <div class="btn-primary" onclick="showToast('选座成功！工位 A1')">✅ 确认选座</div>
-</div>
-
-<!-- ==================== 券包（仅核销） ==================== -->
-<div class="page" id="page-coupon">
-  <div class="navbar"><div class="navbar-title">我的券包</div></div>
-  <div class="coupon-tabs">
-    <div class="coupon-tab active" onclick="switchCouponTab(this,'unused')">未使用</div>
-    <div class="coupon-tab" onclick="switchCouponTab(this,'used')">已核销</div>
-    <div class="coupon-tab" onclick="switchCouponTab(this,'expired')">已过期</div>
-  </div>
-  <div id="couponList">
-    <div class="coupon-mine" onclick="navigateTo('page-coupon-detail')">
-      <div class="coupon-mine-icon">🎫</div>
-      <div class="coupon-mine-info">
-        <h4>单人拼豆体验套餐</h4>
-        <p>有效期至 2026-06-30</p>
-        <div class="purchase-count">该套餐今日已购42份 · 本人持有1张</div>
+    <div class="team-manage-card" style="margin:12px;">
+      <div class="team-manage-header">
+        <h4>D2号大桌</h4>
+        <span class="status pending">待确认</span>
       </div>
-      <div class="coupon-mine-right">
-        <div class="coupon-mine-status unused">未使用</div>
+      <div class="team-manage-body">
+        <div style="font-size:13px;color:#666;">当前组队：</div>
+        <div class="members">
+          <span class="team-member-tag">刘小强</span>
+          <span class="team-member-tag">陈小美</span>
+        </div>
       </div>
-    </div>
-    <div class="coupon-mine" onclick="navigateTo('page-coupon-detail')">
-      <div class="coupon-mine-icon">🎫</div>
-      <div class="coupon-mine-info">
-        <h4>双人同行套餐（1+1）</h4>
-        <p>有效期至 2026-06-30</p>
-        <div class="purchase-count">该套餐今日已购28份 · 本人持有2张</div>
-      </div>
-      <div class="coupon-mine-right">
-        <div class="coupon-mine-status unused">未使用</div>
-      </div>
-    </div>
-    <div class="coupon-mine" onclick="navigateTo('page-coupon-detail')">
-      <div class="coupon-mine-icon">🎫</div>
-      <div class="coupon-mine-info">
-        <h4>亲子DIY套餐</h4>
-        <p>有效期至 2026-07-31</p>
-        <div class="purchase-count">该套餐今日已购85份 · 本人持有1张</div>
-      </div>
-      <div class="coupon-mine-right">
-        <div class="coupon-mine-status unused">未使用</div>
-      </div>
-    </div>
-  </div>
-  <div style="text-align:center;padding:16px;">
-    <div style="padding:10px 20px;background:#fff;border-radius:20px;display:inline-block;font-size:13px;color:#666;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.06);" onclick="showToast('跳转第三方平台购买更多')">🛒 去第三方平台购买更多 →</div>
-  </div>
-</div>
-
-<!-- ==================== 券详情 ==================== -->
-<div class="page" id="page-coupon-detail">
-  <div class="navbar">
-    <div class="navbar-back" onclick="goBack()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></div>
-    <div class="navbar-title">券详情</div>
-    <div style="width:28px;"></div>
-  </div>
-  <div class="qr-container">
-    <div style="background:linear-gradient(135deg,#ff6b35,#ff8f5e);color:#fff;padding:24px;border-radius:16px;margin:16px;">
-      <div style="font-size:14px;opacity:.8;">单人拼豆体验套餐</div>
-      <div style="font-size:36px;font-weight:700;margin:8px 0;">¥99</div>
-      <div style="font-size:12px;opacity:.7;text-decoration:line-through;">原价 ¥168</div>
-    </div>
-    <div class="qr-code"><div class="qr-code-text">A037 2026</div></div>
-    <div class="qr-tip">到店出示此二维码即可核销</div>
-    <div style="margin-top:12px;padding:10px 24px;background:#e0f2f1;color:#00897b;border-radius:20px;display:inline-block;font-size:13px;cursor:pointer;" onclick="navigateTo('page-verify')">✅ 前往核销</div>
-  </div>
-  <div style="background:#fff;margin:16px;border-radius:12px;padding:16px;">
-    <h4 style="font-size:15px;margin-bottom:12px;">使用规则</h4>
-    <div style="font-size:13px;color:#666;line-height:1.8;">
-      <p>1. 本券适用于拼豆乐园所有门店</p>
-      <p>2. 包含1小时拼豆体验+基础材料费+饮品1杯</p>
-      <p>3. 适用时段：周一至周五 10:00-18:00</p>
-      <p>4. 节假日通用，不可与其他优惠叠加使用</p>
-      <p>5. 有效期至 2026-06-30</p>
-    </div>
-  </div>
-  <div style="text-align:center;padding:0 16px 16px;">
-    <div style="padding:12px 24px;background:#ff6b35;color:#fff;border-radius:20px;display:inline-block;font-size:14px;cursor:pointer;" onclick="showToast('跳转第三方平台复购')">🛒 去第三方平台复购</div>
-  </div>
-</div>
-
-<!-- ==================== 核销界面 ==================== -->
-<div class="page" id="page-verify">
-  <div class="navbar">
-    <div class="navbar-back" onclick="goBack()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></div>
-    <div class="navbar-title">券码核销</div>
-    <div style="width:28px;"></div>
-  </div>
-
-  <!-- 核销方式切换 -->
-  <div style="display:flex;gap:10px;padding:16px;">
-    <div class="option-item selected" onclick="switchVerifyMode(this,'scan')" id="verifyModeScan" style="flex:1;text-align:center;">📷 扫码核销</div>
-    <div class="option-item" onclick="switchVerifyMode(this,'manual')" id="verifyModeManual" style="flex:1;text-align:center;">⌨️ 手动输入</div>
-  </div>
-
-  <!-- 扫码区域 -->
-  <div id="verifyScanArea" style="background:#fff;margin:0 16px 16px;border-radius:16px;padding:32px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.04);">
-    <div style="width:200px;height:200px;margin:0 auto 16px;border:2px dashed #ddd;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#fafafa;">
-      <div style="font-size:48px;margin-bottom:8px;">📷</div>
-      <div style="font-size:14px;color:#999;">将二维码放入框内扫描</div>
-      <div style="font-size:11px;color:#bbb;margin-top:4px;">支持美团/大众点评/抖音券码</div>
-    </div>
-    <div style="padding:12px 24px;background:linear-gradient(135deg,#ff6b35,#ff8f5e);color:#fff;border-radius:20px;display:inline-block;font-size:14px;cursor:pointer;" onclick="simulateVerify()">🔍 模拟扫码</div>
-  </div>
-
-  <!-- 手动输入区域 -->
-  <div id="verifyManualArea" style="background:#fff;margin:0 16px 16px;border-radius:16px;padding:20px;display:none;box-shadow:0 1px 4px rgba(0,0,0,.04);">
-    <div style="margin-bottom:16px;">
-      <label style="display:block;font-size:14px;font-weight:500;margin-bottom:8px;">券码/核销码</label>
-      <input type="text" id="verifyCodeInput" placeholder="请输入券码，如 A037 2026" style="width:100%;padding:14px 16px;border:1px solid #eee;border-radius:12px;font-size:16px;background:#f8f8f8;text-align:center;letter-spacing:2px;">
-    </div>
-    <div style="padding:14px;background:#ff6b35;color:#fff;border-radius:12px;text-align:center;font-size:15px;font-weight:600;cursor:pointer;" onclick="manualVerify()">✅ 确认核销</div>
-  </div>
-
-  <!-- 核销结果（默认隐藏） -->
-  <div id="verifyResult" style="display:none;">
-    <div style="background:#fff;margin:0 16px 16px;border-radius:16px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,.04);">
-      <div id="verifyResultIcon" style="text-align:center;font-size:56px;margin-bottom:12px;">✅</div>
-      <div id="verifyResultTitle" style="text-align:center;font-size:18px;font-weight:700;margin-bottom:8px;color:#4caf50;">核销成功</div>
-      <div id="verifyResultInfo" style="background:#f8f8f8;border-radius:12px;padding:16px;margin-bottom:16px;">
-        <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;"><span style="color:#999;">券码</span><span style="font-weight:500;">A037 2026</span></div>
-        <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;"><span style="color:#999;">套餐</span><span style="font-weight:500;">单人拼豆体验套餐</span></div>
-        <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;"><span style="color:#999;">面值</span><span style="font-weight:500;color:#ff6b35;">¥99</span></div>
-        <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;"><span style="color:#999;">核销时间</span><span style="font-weight:500;" id="verifyTime"></span></div>
-        <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;"><span style="color:#999;">操作人</span><span style="font-weight:500;">门店前台</span></div>
-      </div>
-      <div style="display:flex;gap:10px;">
-        <div style="flex:1;padding:12px;background:#f5f5f5;border-radius:12px;text-align:center;font-size:14px;color:#666;cursor:pointer;" onclick="resetVerify()">继续核销</div>
-        <div style="flex:1;padding:12px;background:#e8f5e9;border-radius:12px;text-align:center;font-size:14px;color:#4caf50;cursor:pointer;" onclick="showToast('已打印小票')">🖨️ 打印小票</div>
+      <div class="team-manage-footer">
+        <div class="purchase-info">👥 2/4人 | 锁定剩余：15分钟 | 关联套餐：双人1小时（今日已购28份）</div>
+        <div class="actions">
+          <button style="background:#e8f5e9;color:#4caf50;" onclick="showToast('座位已释放')">释放座位</button>
+          <button style="background:#ffebee;color:#f44336;" onclick="showToast('组队已撤销')">撤销组队</button>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- 今日核销统计 -->
-  <div style="background:#fff;margin:0 16px 16px;border-radius:12px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.04);">
-    <h4 style="font-size:14px;font-weight:600;margin-bottom:12px;">📊 今日核销统计</h4>
-    <div style="display:flex;gap:10px;margin-bottom:10px;">
-      <div style="flex:1;background:#f8f8f8;border-radius:10px;padding:12px;text-align:center;">
-        <div style="font-size:22px;font-weight:700;color:#4caf50;">38</div>
-        <div style="font-size:11px;color:#999;margin-top:4px;">已核销</div>
-      </div>
-      <div style="flex:1;background:#f8f8f8;border-radius:10px;padding:12px;text-align:center;">
-        <div style="font-size:22px;font-weight:700;color:#ff9800;">12</div>
-        <div style="font-size:11px;color:#999;margin-top:4px;">待核销</div>
-      </div>
-      <div style="flex:1;background:#f8f8f8;border-radius:10px;padding:12px;text-align:center;">
-        <div style="font-size:22px;font-weight:700;color:#f44336;">2</div>
-        <div style="font-size:11px;color:#999;margin-top:4px;">已退款</div>
+  <!-- 人工管控操作 -->
+  <div id="control-content" style="display:none;">
+    <div class="chart-section" style="margin:12px;">
+      <h3>⚙️ 人工管控操作</h3>
+      <div class="queue-actions" style="padding:0;">
+        <button class="queue-btn success" onclick="showToast('订单核销功能')">🎫 订单核销</button>
+        <button class="queue-btn warning" onclick="showToast('撤销大桌组队')">🚫 撤销组队</button>
+        <button class="queue-btn danger" onclick="showToast('强制释放座位')">🔓 释放座位</button>
+        <button class="queue-btn primary" onclick="showToast('调整时段配额')">📊 调整配额</button>
       </div>
     </div>
-    <div style="font-size:12px;color:#999;text-align:center;">最近核销：14:32 单人体验套餐 A037</div>
   </div>
 </div>
 
-<!-- ==================== 会员中心 ==================== -->
-<div class="page" id="page-member">
-  <div class="member-header">
-    <div class="member-avatar">😊</div>
-    <div class="member-name">微信用户</div>
-    <div class="member-level">⭐ 黄金会员</div>
-    <div class="member-stats">
-      <div class="member-stat"><div class="num">2,680</div><div class="label">当前积分</div></div>
-      <div class="member-stat"><div class="num">12</div><div class="label">消费次数</div></div>
-      <div class="member-stat"><div class="num">¥86</div><div class="label">已省金额</div></div>
-    </div>
+<!-- ==================== 模块4：图纸审核管理 ==================== -->
+<div class="page" id="page-patterns">
+  <!-- 导航栏 -->
+  <div class="queue-tabs" style="margin:12px 12px 0;">
+    <div class="queue-tab active" onclick="switchPatternTab(this,'pending')">📋 待审核</div>
+    <div class="queue-tab" onclick="switchPatternTab(this,'approved')">✅ 已通过</div>
+    <div class="queue-tab" onclick="switchPatternTab(this,'removed')">❌ 已下架</div>
+    <div class="queue-tab" onclick="switchPatternTab(this,'archived')">📁 已归档</div>
   </div>
-  <div class="member-menu">
-    <div class="member-menu-item"><div class="icon" style="background:#fff3e0;">🎁</div><div class="text">积分兑换</div><div class="arrow">›</div></div>
-    <div class="member-menu-item"><div class="icon" style="background:#e3f2fd;">📊</div><div class="text">积分明细</div><div class="arrow">›</div></div>
-    <div class="member-menu-item"><div class="icon" style="background:#e8f5e9;">📝</div><div class="text">消费记录</div><div class="arrow">›</div></div>
-  </div>
-</div>
 
-<!-- ==================== 个人中心 ==================== -->
-<div class="page" id="page-profile">
-  <div class="profile-header">
-    <div class="profile-avatar">😊</div>
-    <div class="profile-name">微信用户</div>
-    <div class="profile-id">ID: PD_20260501</div>
-  </div>
-  <div class="profile-menu">
-    <div class="profile-menu-item" onclick="navigateTo('page-verify')"><div class="icon" style="background:#e0f2f1;">✅</div><div class="text">券码核销</div><div class="arrow">›</div></div>
-    <div class="profile-menu-item" onclick="switchTab(3)"><div class="icon" style="background:#fff3e0;">📋</div><div class="text">我的券包</div><div class="badge">3</div><div class="arrow">›</div></div>
-    <div class="profile-menu-item"><div class="icon" style="background:#fce4ec;">❤️</div><div class="text">我的收藏</div><div class="arrow">›</div></div>
-    <div class="profile-menu-item"><div class="icon" style="background:#e3f2fd;">📁</div><div class="text">个人图纸归档</div><div class="arrow">›</div></div>
-    <div class="profile-menu-item"><div class="icon" style="background:#f3e5f5;">👁️</div><div class="text">浏览历史</div><div class="arrow">›</div></div>
-    <div class="profile-menu-item"><div class="icon" style="background:#ffebee;">⚠️</div><div class="text">风控违规记录</div><div class="arrow">›</div></div>
-  </div>
-  <div class="profile-menu">
-    <div class="profile-menu-item"><div class="icon" style="background:#e8f5e9;">🏪</div><div class="text">关于门店</div><div class="arrow">›</div></div>
-    <div class="profile-menu-item"><div class="icon" style="background:#e3f2fd;">💬</div><div class="text">客服咨询</div><div class="arrow">›</div></div>
-    <div class="profile-menu-item"><div class="icon" style="background:#f5f5f5;">⚙️</div><div class="text">设置</div><div class="arrow">›</div></div>
-  </div>
-  <div class="logout-btn" onclick="showToast('已退出登录')">退出登录</div>
-</div>
-
-<!-- ==================== TabBar ==================== -->
-<div class="tabbar" id="tabbar">
-  <div class="tabbar-item active" onclick="switchTab(0)"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>首页</span></div>
-  <div class="tabbar-item" onclick="switchTab(1)"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg><span>图库</span></div>
-  <div class="tabbar-item" onclick="switchTab(2)"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14h-2v-4H8l4-4 4 4h-2v4z"/></svg><span>排队预约</span></div>
-  <div class="tabbar-item" onclick="switchTab(3)"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg><span>我的</span></div>
-</div>
-
-<!-- 分享弹窗 -->
-<div class="modal-overlay" id="shareModal">
-  <div class="modal-content">
-    <div class="modal-title">🔗 分享大桌组队邀请</div>
-    <div style="text-align:center;padding:16px 0;">
-      <div style="font-size:48px;margin-bottom:12px;">🪑</div>
-      <p style="font-size:14px;color:#666;margin-bottom:8px;">D1号大桌 · 亲子DIY套餐</p>
-      <p style="font-size:13px;color:#999;">已组队 3/4人，还差1人即可锁定</p>
-    </div>
-    <div style="display:flex;gap:12px;margin-bottom:16px;">
-      <div style="flex:1;text-align:center;cursor:pointer;" onclick="showToast('已分享到微信')">
-        <div style="width:48px;height:48px;background:#07c160;border-radius:12px;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:24px;">💬</div>
-        <div style="font-size:12px;color:#666;">微信好友</div>
+  <!-- 待审核内容 -->
+  <div id="pattern-pending" class="pattern-content">
+    <div class="pattern-list-item" style="margin:12px;">
+      <div class="pattern-list-img" style="background:#e8f5e9;">🐱</div>
+      <div class="pattern-list-info">
+        <h4>可爱小猫咪</h4>
+        <div class="meta">上传者：用户_PD_9527 | 2026-05-08 10:23</div>
+        <div class="meta">标签：动物 | 难度：简单 | 预计1小时</div>
       </div>
-      <div style="flex:1;text-align:center;cursor:pointer;" onclick="showToast('链接已复制')">
-        <div style="width:48px;height:48px;background:#667eea;border-radius:12px;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:24px;">🔗</div>
-        <div style="font-size:12px;color:#666;">复制链接</div>
+      <div class="pattern-list-actions">
+        <button class="pass" onclick="showToast('图纸已通过审核')">通过</button>
+        <button class="delete" onclick="showToast('图纸已下架')">下架</button>
       </div>
     </div>
-    <div style="text-align:center;padding:12px;background:#f8f8f8;border-radius:10px;cursor:pointer;" onclick="closeModal('shareModal')">取消</div>
+
+    <div class="pattern-list-item" style="margin:12px;">
+      <div class="pattern-list-img" style="background:#fff3e0;">🌸</div>
+      <div class="pattern-list-info">
+        <h4>樱花小熊</h4>
+        <div class="meta">上传者：用户_PD_8848 | 2026-05-08 09:15</div>
+        <div class="meta">标签：卡通 | 难度：中等 | 预计2小时</div>
+      </div>
+      <div class="pattern-list-actions">
+        <button class="pass" onclick="showToast('图纸已通过审核')">通过</button>
+        <button class="delete" onclick="showToast('图纸已下架')">下架</button>
+      </div>
+    </div>
+
+    <div class="pattern-list-item" style="margin:12px;">
+      <div class="pattern-list-img" style="background:#e3f2fd;">🦄</div>
+      <div class="pattern-list-info">
+        <h4>独角兽</h4>
+        <div class="meta">上传者：用户_PD_6666 | 2026-05-08 08:45</div>
+        <div class="meta">标签：幻想 | 难度：困难 | 预计3小时</div>
+      </div>
+      <div class="pattern-list-actions">
+        <button class="pass" onclick="showToast('图纸已通过审核')">通过</button>
+        <button class="delete" onclick="showToast('图纸已下架')">下架</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 已通过内容 -->
+  <div id="pattern-approved" class="pattern-content" style="display:none;">
+    <div class="pattern-list-item" style="margin:12px;">
+      <div class="pattern-list-img" style="background:#fce4ec;">🐰</div>
+      <div class="pattern-list-info">
+        <h4>垂耳兔</h4>
+        <div class="meta">上传者：用户_PD_1234 | 2026-05-07 14:30</div>
+        <div class="meta">标签：动物 | 难度：简单 | 预计1小时</div>
+      </div>
+      <div class="pattern-list-actions">
+        <button class="delete" onclick="showToast('图纸已下架')">下架</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 已下架内容 -->
+  <div id="pattern-removed" class="pattern-content" style="display:none;">
+    <div class="pattern-list-item" style="margin:12px;">
+      <div class="pattern-list-img" style="background:#ffebee;">🍎</div>
+      <div class="pattern-list-info">
+        <h4>苹果图案</h4>
+        <div class="meta">上传者：用户_PD_9999 | 2026-05-06 16:20</div>
+        <div class="meta">违规原因：图案尺寸不符合要求</div>
+      </div>
+      <div class="pattern-list-actions">
+        <button class="pass" onclick="showToast('图纸已重新上架')">恢复</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 已归档内容 -->
+  <div id="pattern-archived" class="pattern-content" style="display:none;">
+    <div class="pattern-list-item" style="margin:12px;">
+      <div class="pattern-list-img" style="background:#e0f7fa;">🌈</div>
+      <div class="pattern-list-info">
+        <h4>彩虹</h4>
+        <div class="meta">上传者：用户_PD_5555 | 2026-05-01 11:00</div>
+        <div class="meta">归档时间：2026-05-05</div>
+      </div>
+      <div class="pattern-list-actions">
+        <button class="pass" onclick="showToast('图纸已重新上架')">上架</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 分享权限管理 -->
+  <div class="chart-section" style="margin:12px;">
+    <h3>🔗 图纸分享权限管理</h3>
+    <div class="settings-item" style="padding:12px 0;">
+      <div class="left">
+        <div class="text">
+          <h5>消费完成图纸自动公开</h5>
+          <p>用户完成制作后可被其他用户查看</p>
+        </div>
+      </div>
+      <div class="switch on" onclick="toggleSwitch(this)"></div>
+    </div>
+    <div class="settings-item" style="padding:12px 0;border-top:1px solid #f5f5f5;">
+      <div class="left">
+        <div class="text">
+          <h5>允许用户分享图纸到社区</h5>
+          <p>开启后用户可将图纸分享至社交平台</p>
+        </div>
+      </div>
+      <div class="switch on" onclick="toggleSwitch(this)"></div>
+    </div>
+  </div>
+
+  <!-- 上传记录 -->
+  <div class="chart-section" style="margin:12px;">
+    <h3>📋 图纸上传记录</h3>
+    <div class="stats-table">
+      <div class="stats-table-header">
+        <div class="stats-table-cell name">图纸名称</div>
+        <div class="stats-table-cell number">上传者</div>
+        <div class="stats-table-cell rate">状态</div>
+        <div class="stats-table-cell rate">时间</div>
+      </div>
+      <div class="stats-table-row">
+        <div class="stats-table-cell name">可爱小猫咪</div>
+        <div class="stats-table-cell number">用户_9527</div>
+        <div class="stats-table-cell rate" style="color:#4caf50;">已通过</div>
+        <div class="stats-table-cell rate">10:23</div>
+      </div>
+      <div class="stats-table-row">
+        <div class="stats-table-cell name">樱花小熊</div>
+        <div class="stats-table-cell number">用户_8848</div>
+        <div class="stats-table-cell rate" style="color:#ff9800;">待审核</div>
+        <div class="stats-table-cell rate">09:15</div>
+      </div>
+      <div class="stats-table-row">
+        <div class="stats-table-cell name">独角兽</div>
+        <div class="stats-table-cell number">用户_6666</div>
+        <div class="stats-table-cell rate" style="color:#f44336;">已下架</div>
+        <div class="stats-table-cell rate">08:45</div>
+      </div>
+    </div>
   </div>
 </div>
 
+<!-- ==================== 模块5：第三方券&当日已购量专项统计 ==================== -->
+<div class="page" id="page-coupon-stats">
+  <!-- 统计概览卡片 -->
+  <div class="stats-grid">
+    <div class="stat-card primary">
+      <div class="label">今日已购总量</div>
+      <div class="value">155</div>
+      <div class="change up">↑ 较昨日 +12%</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">历史累计购买</div>
+      <div class="value">12,580</div>
+      <div class="change up">↑ 较上月 +8%</div>
+    </div>
+    <div class="stat-card success">
+      <div class="label">📋 核销量</div>
+      <div class="value">106</div>
+      <div class="change up">↑ 较昨日 +9%</div>
+    </div>
+    <div class="stat-card warning">
+      <div class="label">⚠️ 过号量</div>
+      <div class="value">8</div>
+      <div class="change down">↓ 较昨日 -2</div>
+    </div>
+  </div>
+
+  <!-- 导航栏 -->
+  <div class="queue-tabs" style="margin:12px 12px 0;">
+    <div class="queue-tab active" onclick="switchCouponTab(this,'stats')">📊 套餐数据</div>
+    <div class="queue-tab" onclick="switchCouponTab(this,'trend')">📈 销售趋势</div>
+    <div class="queue-tab" onclick="switchCouponTab(this,'export')">📥 数据导出</div>
+  </div>
+
+  <!-- 套餐数据 -->
+  <div id="coupon-stats" class="coupon-content">
+    <!-- 时间维度切换 -->
+    <div class="chart-section" style="margin:12px;">
+      <div class="chart-header">
+        <h3>📋 各套餐数据统计</h3>
+        <div class="chart-tabs">
+          <div class="chart-tab active" onclick="switchCouponStatsTab(this,'day')">日</div>
+          <div class="chart-tab" onclick="switchCouponStatsTab(this,'week')">周</div>
+          <div class="chart-tab" onclick="switchCouponStatsTab(this,'month')">月</div>
+        </div>
+      </div>
+      
+      <!-- 日视图 -->
+      <div id="stats-day" class="stats-view">
+        <div style="font-size:11px;color:#999;margin-bottom:8px;">📅 2026年5月8日（今日）</div>
+        <div class="stats-table">
+          <div class="stats-table-header">
+            <div class="stats-table-cell name">套餐名称</div>
+            <div class="stats-table-cell number">当日已购</div>
+            <div class="stats-table-cell number">历史累计</div>
+            <div class="stats-table-cell rate">核销量</div>
+            <div class="stats-table-cell rate">过号量</div>
+          </div>
+          <div class="stats-table-row">
+            <div class="stats-table-cell name">🦘 单人1小时</div>
+            <div class="stats-table-cell number">42</div>
+            <div class="stats-table-cell number">3,450</div>
+            <div class="stats-table-cell rate" style="color:#4caf50;">28</div>
+            <div class="stats-table-cell rate" style="color:#f44336;">2</div>
+          </div>
+          <div class="stats-table-row">
+            <div class="stats-table-cell name">⭐ 双人1小时</div>
+            <div class="stats-table-cell number">28</div>
+            <div class="stats-table-cell number">2,180</div>
+            <div class="stats-table-cell rate" style="color:#4caf50;">18</div>
+            <div class="stats-table-cell rate" style="color:#f44336;">2</div>
+          </div>
+          <div class="stats-table-row">
+            <div class="stats-table-cell name">🎵 单人全天</div>
+            <div class="stats-table-cell number">85</div>
+            <div class="stats-table-cell number">6,950</div>
+            <div class="stats-table-cell rate" style="color:#4caf50;">62</div>
+            <div class="stats-table-cell rate" style="color:#f44336;">4</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 周视图 -->
+      <div id="stats-week" class="stats-view" style="display:none;">
+        <div style="font-size:11px;color:#999;margin-bottom:8px;">📅 2026年第19周（5/2-5/8）</div>
+        <div class="stats-table">
+          <div class="stats-table-header">
+            <div class="stats-table-cell name">套餐名称</div>
+            <div class="stats-table-cell number">本周已购</div>
+            <div class="stats-table-cell number">环比上周</div>
+            <div class="stats-table-cell rate">核销量</div>
+            <div class="stats-table-cell rate">过号量</div>
+          </div>
+          <div class="stats-table-row">
+            <div class="stats-table-cell name">🦘 单人1小时</div>
+            <div class="stats-table-cell number">268</div>
+            <div class="stats-table-cell number" style="color:#4caf50;">↑12%</div>
+            <div class="stats-table-cell rate" style="color:#4caf50;">186</div>
+            <div class="stats-table-cell rate" style="color:#f44336;">15</div>
+          </div>
+          <div class="stats-table-row">
+            <div class="stats-table-cell name">⭐ 双人1小时</div>
+            <div class="stats-table-cell number">185</div>
+            <div class="stats-table-cell number" style="color:#4caf50;">↑8%</div>
+            <div class="stats-table-cell rate" style="color:#4caf50;">128</div>
+            <div class="stats-table-cell rate" style="color:#f44336;">12</div>
+          </div>
+          <div class="stats-table-row">
+            <div class="stats-table-cell name">🎵 单人全天</div>
+            <div class="stats-table-cell number">512</div>
+            <div class="stats-table-cell number" style="color:#4caf50;">↑18%</div>
+            <div class="stats-table-cell rate" style="color:#4caf50;">385</div>
+            <div class="stats-table-cell rate" style="color:#f44336;">28</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 月视图 -->
+      <div id="stats-month" class="stats-view" style="display:none;">
+        <div style="font-size:11px;color:#999;margin-bottom:8px;">📅 2026年5月</div>
+        <div class="stats-table">
+          <div class="stats-table-header">
+            <div class="stats-table-cell name">套餐名称</div>
+            <div class="stats-table-cell number">本月已购</div>
+            <div class="stats-table-cell number">环比上月</div>
+            <div class="stats-table-cell rate">核销量</div>
+            <div class="stats-table-cell rate">过号量</div>
+          </div>
+          <div class="stats-table-row">
+            <div class="stats-table-cell name">🦘 单人1小时</div>
+            <div class="stats-table-cell number">986</div>
+            <div class="stats-table-cell number" style="color:#4caf50;">↑15%</div>
+            <div class="stats-table-cell rate" style="color:#4caf50;">682</div>
+            <div class="stats-table-cell rate" style="color:#f44336;">58</div>
+          </div>
+          <div class="stats-table-row">
+            <div class="stats-table-cell name">⭐ 双人1小时</div>
+            <div class="stats-table-cell number">645</div>
+            <div class="stats-table-cell number" style="color:#4caf50;">↑10%</div>
+            <div class="stats-table-cell rate" style="color:#4caf50;">452</div>
+            <div class="stats-table-cell rate" style="color:#f44336;">42</div>
+          </div>
+          <div class="stats-table-row">
+            <div class="stats-table-cell name">🎵 单人全天</div>
+            <div class="stats-table-cell number">1,856</div>
+            <div class="stats-table-cell number" style="color:#4caf50;">↑22%</div>
+            <div class="stats-table-cell rate" style="color:#4caf50;">1,342</div>
+            <div class="stats-table-cell rate" style="color:#f44336;">95</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 销售趋势 -->
+  <div id="coupon-trend" class="coupon-content" style="display:none;">
+    <div class="chart-section" style="margin:12px;">
+      <div class="chart-header">
+        <h3>📈 7日套餐销售趋势</h3>
+        <span style="font-size:11px;color:#999;">🎵 单人全天不限时套餐</span>
+      </div>
+      <div class="chart-placeholder">
+        <svg class="chart-line-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+          <path class="chart-line-area" d="M0,60 L16.7,45 L33.3,55 L50,30 L66.7,40 L83.3,20 L100,25 L100,100 L0,100 Z" fill="#667eea" opacity="0.1"/>
+          <path class="chart-line-path" d="M0,60 L16.7,45 L33.3,55 L50,30 L66.7,40 L83.3,20 L100,25" stroke="#667eea" stroke-width="1.5" fill="none"/>
+        </svg>
+        <div class="chart-point" style="left:0%;top:60%;background:#667eea"><div class="chart-point-label">18</div></div>
+        <div class="chart-point" style="left:16.7%;top:45%;background:#667eea"><div class="chart-point-label">22</div></div>
+        <div class="chart-point" style="left:33.3%;top:55%;background:#667eea"><div class="chart-point-label">20</div></div>
+        <div class="chart-point" style="left:50%;top:30%;background:#667eea"><div class="chart-point-label">28</div></div>
+        <div class="chart-point" style="left:66.7%;top:40%;background:#667eea"><div class="chart-point-label">25</div></div>
+        <div class="chart-point" style="left:83.3%;top:20%;background:#667eea"><div class="chart-point-label">32</div></div>
+        <div class="chart-point" style="left:100%;top:25%;background:#667eea"><div class="chart-point-label">30</div></div>
+      </div>
+      <div class="chart-axis">
+        <span>5/2</span><span>5/3</span><span>5/4</span><span>5/5</span><span>5/6</span><span>5/7</span><span>今日</span>
+      </div>
+      <div class="chart-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#667eea;"></div>单人全天套餐</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 数据导出 -->
+  <div id="coupon-export" class="coupon-content" style="display:none;">
+    <div class="chart-section" style="margin:12px;">
+      <h3>📥 数据导出</h3>
+      <div class="export-btns">
+        <div class="export-btn" onclick="showToast('月度套餐已购明细导出成功')">月度套餐已购明细</div>
+        <div class="export-btn" onclick="showToast('月度订单核销明细导出成功')">月度订单核销明细</div>
+        <div class="export-btn" onclick="showToast('月度用户履约明细导出成功')">月度用户履约明细</div>
+        <div class="export-btn" onclick="showToast('月度全部报表导出成功')">月度全部报表</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 模块6：数据统计看板 ==================== -->
+<div class="page" id="page-dashboard">
+  <!-- 6.1 核心趋势指标板块（严格按照指定顺序） -->
+  <div class="stats-grid">
+    <!-- 1. 今日客流 -->
+    <div class="stat-card primary">
+      <div class="label">👥 今日客流</div>
+      <div class="value">168</div>
+      <div class="change up">↑ 较昨日 +12%</div>
+    </div>
+    <!-- 2. 今日营收 -->
+    <div class="stat-card success">
+      <div class="label">💰 今日营收</div>
+      <div class="value">¥5,280</div>
+      <div class="change up">↑ 较昨日 +8%</div>
+    </div>
+    <!-- 3. 今日取号量 -->
+    <div class="stat-card">
+      <div class="label">🎫 今日取号量</div>
+      <div class="value">186</div>
+      <div class="change down">↓ 较昨日 -3%</div>
+      <div style="margin-top:8px;padding-top:8px;border-top:1px solid #f0f0f0;font-size:11px;color:#999;">
+        线上：112 | 线下：74
+      </div>
+    </div>
+    <!-- 4. 今日大桌组队率 -->
+    <div class="stat-card">
+      <div class="label">🪑 今日大桌组队率</div>
+      <div class="value">32.5%</div>
+      <div class="change up">↑ 较昨日 +5%</div>
+    </div>
+    <!-- 5. 今日大桌利用率 -->
+    <div class="stat-card">
+      <div class="label">📊 今日大桌利用率</div>
+      <div class="value">78.2%</div>
+      <div class="change up">↑ 较昨日 +2%</div>
+    </div>
+    <!-- 6. 今日过号弃单率 -->
+    <div class="stat-card warning">
+      <div class="label">⚠️ 今日过号弃单率</div>
+      <div class="value">4.8%</div>
+      <div class="change down">↓ 较昨日 -1.5%</div>
+    </div>
+    <!-- 7. 今日券核销率 -->
+    <div class="stat-card success">
+      <div class="label">✅ 今日券核销率</div>
+      <div class="value">68.5%</div>
+      <div class="change up">↑ 较昨日 +4%</div>
+    </div>
+  </div>
+
+  <!-- 第三方套餐·当日已购量实时看板 -->
+  <div class="purchase-board">
+    <h3>🎫 第三方套餐·当日已购量</h3>
+    
+    <div class="purchase-board-item">
+      <div class="pb-icon" style="background:#ffe4e1;font-size:20px;">🦘</div>
+      <div class="pb-info">
+        <h4>单人1小时拼豆体验</h4>
+        <div class="meta">¥19.9 | 第三方平台：美团</div>
+      </div>
+      <div class="pb-stats">
+        <div class="pb-stat">
+          <div class="num hot">42</div>
+          <div class="lbl">已购</div>
+        </div>
+        <div class="pb-stat">
+          <div class="num ok">28</div>
+          <div class="lbl">已核销</div>
+        </div>
+        <div class="pb-stat">
+          <div class="num wait">8</div>
+          <div class="lbl">待到店</div>
+        </div>
+        <div class="pb-stat">
+          <div class="num" style="color:#2196f3;">6</div>
+          <div class="lbl">可售</div>
+        </div>
+      </div>
+    </div>
+    <div class="pb-bar">
+      <div class="pb-bar-fill verified" style="width:67%;"></div>
+    </div>
+    <div class="pb-desc">💡 核销转化情况：已核销28单，占已购总量的67%，转化率良好</div>
+
+    <div class="purchase-board-item" style="border-top:1px solid #f5f5f5;margin-top:12px;padding-top:12px;">
+      <div class="pb-icon" style="background:#e6f7ff;font-size:20px;">⭐</div>
+      <div class="pb-info">
+        <h4>双人1小时同行套餐</h4>
+        <div class="meta">¥29.9 | 第三方平台：大众点评</div>
+      </div>
+      <div class="pb-stats">
+        <div class="pb-stat">
+          <div class="num hot">28</div>
+          <div class="lbl">已购</div>
+        </div>
+        <div class="pb-stat">
+          <div class="num ok">18</div>
+          <div class="lbl">已核销</div>
+        </div>
+        <div class="pb-stat">
+          <div class="num wait">6</div>
+          <div class="lbl">待到店</div>
+        </div>
+        <div class="pb-stat">
+          <div class="num" style="color:#2196f3;">4</div>
+          <div class="lbl">可售</div>
+        </div>
+      </div>
+    </div>
+    <div class="pb-bar">
+      <div class="pb-bar-fill verified" style="width:64%;"></div>
+    </div>
+    <div class="pb-desc">💡 核销转化情况：已核销18单，占已购总量的64%，转化率正常</div>
+
+    <div class="purchase-board-item" style="border-top:1px solid #f5f5f5;margin-top:12px;padding-top:12px;">
+      <div class="pb-icon" style="background:#1a1a2e;font-size:20px;">🎵</div>
+      <div class="pb-info">
+        <h4>单人全天不限时套餐</h4>
+        <div class="meta">¥49.9 | 第三方平台：抖音</div>
+      </div>
+      <div class="pb-stats">
+        <div class="pb-stat">
+          <div class="num hot">85</div>
+          <div class="lbl">已购</div>
+        </div>
+        <div class="pb-stat">
+          <div class="num ok">62</div>
+          <div class="lbl">已核销</div>
+        </div>
+        <div class="pb-stat">
+          <div class="num wait">15</div>
+          <div class="lbl">待到店</div>
+        </div>
+        <div class="pb-stat">
+          <div class="num" style="color:#2196f3;">8</div>
+          <div class="lbl">可售</div>
+        </div>
+      </div>
+    </div>
+    <div class="pb-bar">
+      <div class="pb-bar-fill verified" style="width:73%;"></div>
+    </div>
+    <div class="pb-desc">💡 核销转化情况：已核销62单，占已购总量的73%，转化率优秀，该套餐为今日爆款</div>
+  </div>
+
+  <!-- 6.2 周期趋势图表板块（可切换卡片） -->
+  <div class="queue-tabs" style="margin-bottom:0;">
+    <div class="queue-tab active" onclick="switchTrendTab(this,'revenue')">💰 营收</div>
+    <div class="queue-tab" onclick="switchTrendTab(this,'team')">🪑 组队率</div>
+    <div class="queue-tab" onclick="switchTrendTab(this,'drop')">⚠️ 弃单率</div>
+    <div class="queue-tab" onclick="switchTrendTab(this,'verify')">✅ 核销率</div>
+    <div class="queue-tab" onclick="switchTrendTab(this,'util')">📊 利用率</div>
+  </div>
+
+  <!-- 7日营收趋势图 -->
+  <div class="chart-section trend-chart active" id="trend-revenue">
+    <div class="chart-header">
+      <h3>💰 7日营收趋势</h3>
+      <span style="font-size:11px;color:#999;">2026/05/02 - 2026/05/08</span>
+    </div>
+    <div class="chart-placeholder">
+      <svg class="chart-line-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <path class="chart-line-area" d="M0,50 L16.7,35 L33.3,45 L50,20 L66.7,30 L83.3,10 L100,15 L100,100 L0,100 Z" fill="#667eea" opacity="0.1"/>
+        <path class="chart-line-path" d="M0,50 L16.7,35 L33.3,45 L50,20 L66.7,30 L83.3,10 L100,15" stroke="#667eea" fill="none"/>
+      </svg>
+      <div class="chart-point" style="left:0%;top:50%;background:#667eea"><div class="chart-point-label">¥3,680</div></div>
+      <div class="chart-point" style="left:16.7%;top:35%;background:#667eea"><div class="chart-point-label">¥4,120</div></div>
+      <div class="chart-point" style="left:33.3%;top:45%;background:#667eea"><div class="chart-point-label">¥3,850</div></div>
+      <div class="chart-point" style="left:50%;top:20%;background:#667eea"><div class="chart-point-label">¥4,680</div></div>
+      <div class="chart-point" style="left:66.7%;top:30%;background:#667eea"><div class="chart-point-label">¥4,240</div></div>
+      <div class="chart-point" style="left:83.3%;top:10%;background:#667eea"><div class="chart-point-label">¥4,860</div></div>
+      <div class="chart-point" style="left:100%;top:15%;background:#667eea"><div class="chart-point-label">¥5,280</div></div>
+    </div>
+    <div class="chart-axis">
+      <span>5/2</span><span>5/3</span><span>5/4</span><span>5/5</span><span>5/6</span><span>5/7</span><span>今日</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:#999;">
+      <span>最低：¥3,680</span><span>最高：¥5,280</span>
+    </div>
+  </div>
+
+  <!-- 7日大桌组队率趋势图 -->
+  <div class="chart-section trend-chart" id="trend-team" style="display:none;">
+    <div class="chart-header">
+      <h3>🪑 7日大桌组队率趋势</h3>
+      <span style="font-size:11px;color:#999;">2026/05/02 - 2026/05/08</span>
+    </div>
+    <div class="chart-placeholder">
+      <svg class="chart-line-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <path class="chart-line-area" d="M0,72 L16.7,58 L33.3,62 L50,55 L66.7,60 L83.3,52 L100,48 L100,100 L0,100 Z" fill="#4caf50" opacity="0.1"/>
+        <path class="chart-line-path" d="M0,72 L16.7,58 L33.3,62 L50,55 L66.7,60 L83.3,52 L100,48" stroke="#4caf50" fill="none"/>
+      </svg>
+      <div class="chart-point" style="left:0%;top:72%;background:#4caf50"><div class="chart-point-label">28%</div></div>
+      <div class="chart-point" style="left:16.7%;top:58%;background:#4caf50"><div class="chart-point-label">30%</div></div>
+      <div class="chart-point" style="left:33.3%;top:62%;background:#4caf50"><div class="chart-point-label">29%</div></div>
+      <div class="chart-point" style="left:50%;top:55%;background:#4caf50"><div class="chart-point-label">31%</div></div>
+      <div class="chart-point" style="left:66.7%;top:60%;background:#4caf50"><div class="chart-point-label">30.5%</div></div>
+      <div class="chart-point" style="left:83.3%;top:52%;background:#4caf50"><div class="chart-point-label">31.8%</div></div>
+      <div class="chart-point" style="left:100%;top:48%;background:#4caf50"><div class="chart-point-label">32.5%</div></div>
+    </div>
+    <div class="chart-axis">
+      <span>5/2</span><span>5/3</span><span>5/4</span><span>5/5</span><span>5/6</span><span>5/7</span><span>今日</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:#999;">
+      <span>最低：28%</span><span>最高：32.5%</span>
+    </div>
+  </div>
+
+  <!-- 7日过号弃单率趋势图 -->
+  <div class="chart-section trend-chart" id="trend-drop" style="display:none;">
+    <div class="chart-header">
+      <h3>⚠️ 7日过号弃单率趋势</h3>
+      <span style="font-size:11px;color:#999;">2026/05/02 - 2026/05/08</span>
+    </div>
+    <div class="chart-placeholder">
+      <svg class="chart-line-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <path class="chart-line-area" d="M0,42 L16.7,39 L33.3,45 L50,37 L66.7,41 L83.3,38 L100,52 L100,100 L0,100 Z" fill="#ff9800" opacity="0.1"/>
+        <path class="chart-line-path" d="M0,42 L16.7,39 L33.3,45 L50,37 L66.7,41 L83.3,38 L100,52" stroke="#ff9800" fill="none"/>
+      </svg>
+      <div class="chart-point" style="left:0%;top:42%;background:#ff9800"><div class="chart-point-label">5.8%</div></div>
+      <div class="chart-point" style="left:16.7%;top:39%;background:#ff9800"><div class="chart-point-label">6.1%</div></div>
+      <div class="chart-point" style="left:33.3%;top:45%;background:#ff9800"><div class="chart-point-label">5.5%</div></div>
+      <div class="chart-point" style="left:50%;top:37%;background:#ff9800"><div class="chart-point-label">6.3%</div></div>
+      <div class="chart-point" style="left:66.7%;top:41%;background:#ff9800"><div class="chart-point-label">5.9%</div></div>
+      <div class="chart-point" style="left:83.3%;top:38%;background:#ff9800"><div class="chart-point-label">6.0%</div></div>
+      <div class="chart-point" style="left:100%;top:52%;background:#ff9800"><div class="chart-point-label">4.8%</div></div>
+    </div>
+    <div class="chart-axis">
+      <span>5/2</span><span>5/3</span><span>5/4</span><span>5/5</span><span>5/6</span><span>5/7</span><span>今日</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:#999;">
+      <span>最低：4.8%</span><span>最高：6.3%</span>
+    </div>
+  </div>
+
+  <!-- 7日券核销率趋势图 -->
+  <div class="chart-section trend-chart" id="trend-verify" style="display:none;">
+    <div class="chart-header">
+      <h3>✅ 7日券核销率趋势</h3>
+      <span style="font-size:11px;color:#999;">2026/05/02 - 2026/05/08</span>
+    </div>
+    <div class="chart-placeholder">
+      <svg class="chart-line-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <path class="chart-line-area" d="M0,38 L16.7,36.5 L33.3,39 L50,32 L66.7,30 L83.3,27 L100,24 L100,100 L0,100 Z" fill="#2196f3" opacity="0.1"/>
+        <path class="chart-line-path" d="M0,38 L16.7,36.5 L33.3,39 L50,32 L66.7,30 L83.3,27 L100,24" stroke="#2196f3" fill="none"/>
+      </svg>
+      <div class="chart-point" style="left:0%;top:38%;background:#2196f3"><div class="chart-point-label">62%</div></div>
+      <div class="chart-point" style="left:16.7%;top:36.5%;background:#2196f3"><div class="chart-point-label">63.5%</div></div>
+      <div class="chart-point" style="left:33.3%;top:39%;background:#2196f3"><div class="chart-point-label">61%</div></div>
+      <div class="chart-point" style="left:50%;top:32%;background:#2196f3"><div class="chart-point-label">64.2%</div></div>
+      <div class="chart-point" style="left:66.7%;top:30%;background:#2196f3"><div class="chart-point-label">65%</div></div>
+      <div class="chart-point" style="left:83.3%;top:27%;background:#2196f3"><div class="chart-point-label">66.3%</div></div>
+      <div class="chart-point" style="left:100%;top:24%;background:#2196f3"><div class="chart-point-label">68.5%</div></div>
+    </div>
+    <div class="chart-axis">
+      <span>5/2</span><span>5/3</span><span>5/4</span><span>5/5</span><span>5/6</span><span>5/7</span><span>今日</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:#999;">
+      <span>最低：62%</span><span>最高：68.5%</span>
+    </div>
+  </div>
+
+  <!-- 7日大桌利用率趋势图 -->
+  <div class="chart-section trend-chart" id="trend-util" style="display:none;">
+    <div class="chart-header">
+      <h3>📊 7日大桌利用率趋势</h3>
+      <span style="font-size:11px;color:#999;">2026/05/02 - 2026/05/08</span>
+    </div>
+    <div class="chart-placeholder">
+      <svg class="chart-line-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <path class="chart-line-area" d="M0,28 L16.7,26.5 L33.3,29 L50,25 L66.7,24 L83.3,23 L100,21.8 L100,100 L0,100 Z" fill="#9c27b0" opacity="0.1"/>
+        <path class="chart-line-path" d="M0,28 L16.7,26.5 L33.3,29 L50,25 L66.7,24 L83.3,23 L100,21.8" stroke="#9c27b0" fill="none"/>
+      </svg>
+      <div class="chart-point" style="left:0%;top:28%;background:#9c27b0"><div class="chart-point-label">72%</div></div>
+      <div class="chart-point" style="left:16.7%;top:26.5%;background:#9c27b0"><div class="chart-point-label">73.5%</div></div>
+      <div class="chart-point" style="left:33.3%;top:29%;background:#9c27b0"><div class="chart-point-label">71%</div></div>
+      <div class="chart-point" style="left:50%;top:25%;background:#9c27b0"><div class="chart-point-label">75%</div></div>
+      <div class="chart-point" style="left:66.7%;top:24%;background:#9c27b0"><div class="chart-point-label">76%</div></div>
+      <div class="chart-point" style="left:83.3%;top:23%;background:#9c27b0"><div class="chart-point-label">77%</div></div>
+      <div class="chart-point" style="left:100%;top:21.8%;background:#9c27b0"><div class="chart-point-label">78.2%</div></div>
+    </div>
+    <div class="chart-axis">
+      <span>5/2</span><span>5/3</span><span>5/4</span><span>5/5</span><span>5/6</span><span>5/7</span><span>今日</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:#999;">
+      <span>最低：72%</span><span>最高：78.2%</span>
+    </div>
+  </div>
+
+  <!-- 6.3 月度热门图纸排行板块（前十名） -->
+  <div class="rank-list">
+    <h3>🔥 月度热门图纸排行 TOP10</h3>
+    <div style="background:#f8f9ff;border-radius:8px;padding:10px 12px;margin-bottom:12px;font-size:12px;color:#666;line-height:1.6;">
+      <strong>📊 热度衡量标准：</strong>综合图纸预约制作量（权重40%）、浏览热度（权重35%）、收藏人数（权重25%）进行排序
+    </div>
+    
+    <div class="rank-item">
+      <div class="rank-num gold">1</div>
+      <div class="rank-img" style="background:#e8f5e9;">🐱</div>
+      <div class="rank-info">
+        <h4>可爱小猫咪</h4>
+        <p>热度 2,580 | 收藏 486</p>
+      </div>
+      <div class="rank-count">预约 128</div>
+    </div>
+    
+    <div class="rank-item">
+      <div class="rank-num silver">2</div>
+      <div class="rank-img" style="background:#fff3e0;">🌸</div>
+      <div class="rank-info">
+        <h4>樱花小熊</h4>
+        <p>热度 2,240 | 收藏 392</p>
+      </div>
+      <div class="rank-count">预约 105</div>
+    </div>
+    
+    <div class="rank-item">
+      <div class="rank-num bronze">3</div>
+      <div class="rank-img" style="background:#e3f2fd;">🦄</div>
+      <div class="rank-info">
+        <h4>独角兽</h4>
+        <p>热度 1,980 | 收藏 356</p>
+      </div>
+      <div class="rank-count">预约 98</div>
+    </div>
+    
+    <div class="rank-item">
+      <div class="rank-num normal">4</div>
+      <div class="rank-img" style="background:#fce4ec;">🐰</div>
+      <div class="rank-info">
+        <h4>垂耳兔</h4>
+        <p>热度 1,650 | 收藏 298</p>
+      </div>
+      <div class="rank-count">预约 82</div>
+    </div>
+    
+    <div class="rank-item">
+      <div class="rank-num normal">5</div>
+      <div class="rank-img" style="background:#f3e5f5;">🏰</div>
+      <div class="rank-info">
+        <h4>迪士尼城堡</h4>
+        <p>热度 1,520 | 收藏 267</p>
+      </div>
+      <div class="rank-count">预约 76</div>
+    </div>
+    
+    <div class="rank-item">
+      <div class="rank-num normal">6</div>
+      <div class="rank-img" style="background:#e0f7fa;">🐸</div>
+      <div class="rank-info">
+        <h4>青蛙王子</h4>
+        <p>热度 1,380 | 收藏 234</p>
+      </div>
+      <div class="rank-count">预约 68</div>
+    </div>
+    
+    <div class="rank-item">
+      <div class="rank-num normal">7</div>
+      <div class="rank-img" style="background:#fff8e1;">🌙</div>
+      <div class="rank-info">
+        <h4>月亮与星星</h4>
+        <p>热度 1,240 | 收藏 198</p>
+      </div>
+      <div class="rank-count">预约 62</div>
+    </div>
+    
+    <div class="rank-item">
+      <div class="rank-num normal">8</div>
+      <div class="rank-img" style="background:#e8f5e9;">🌻</div>
+      <div class="rank-info">
+        <h4>向日葵</h4>
+        <p>热度 1,120 | 收藏 176</p>
+      </div>
+      <div class="rank-count">预约 58</div>
+    </div>
+    
+    <div class="rank-item">
+      <div class="rank-num normal">9</div>
+      <div class="rank-img" style="background:#fff3e0;">🦊</div>
+      <div class="rank-info">
+        <h4>小狐狸</h4>
+        <p>热度 980 | 收藏 154</p>
+      </div>
+      <div class="rank-count">预约 52</div>
+    </div>
+    
+    <div class="rank-item">
+      <div class="rank-num normal">10</div>
+      <div class="rank-img" style="background:#e3f2fd;">⭐</div>
+      <div class="rank-info">
+        <h4>五角星</h4>
+        <p>热度 860 | 收藏 132</p>
+      </div>
+      <div class="rank-count">预约 45</div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== AI智能体悬浮按钮 ==================== -->
+<div class="ai-fab" onclick="showAiPanel()">
+  <div class="pulse"></div>
+  <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+</div>
+
+<!-- ==================== AI智能体面板 ==================== -->
+<div class="ai-overlay" id="aiOverlay" onclick="closeAiPanel()"></div>
+<div class="ai-panel" id="aiPanel">
+  <div class="ai-panel-header">
+    <h3><span class="ai-icon">🤖</span> AI智能数据分析</h3>
+    <div class="ai-panel-close" onclick="closeAiPanel()">✕</div>
+  </div>
+  <div class="ai-content">
+    <div class="ai-summary">
+      <h4>📊 当日经营数据概览</h4>
+      <div class="ai-summary-item">
+        <div class="dot green"></div>
+        <span>今日客流 <strong>168人</strong>，较昨日增长 <strong>+12%</strong>，客流表现良好</span>
+      </div>
+      <div class="ai-summary-item">
+        <div class="dot blue"></div>
+        <span>今日营收 <strong>¥5,280</strong>，客单价约 <strong>¥31</strong>，符合低价套餐定位</span>
+      </div>
+      <div class="ai-summary-item">
+        <div class="dot orange"></div>
+        <span>今日取号量 <strong>186单</strong>，线上占比 <strong>60%</strong>，线上渠道表现稳定</span>
+      </div>
+      <div class="ai-summary-item">
+        <div class="dot green"></div>
+        <span>券核销率 <strong>68.5%</strong>，较昨日提升 <strong>+4%</strong>，核销转化持续改善</span>
+      </div>
+    </div>
+
+    <div class="ai-insight">
+      <h5>🔥 套餐热度排行分析</h5>
+      <p><span class="highlight">亲子DIY套餐</span>今日已购 <strong>85份</strong>，核销率 <strong>73%</strong>，为今日<span class="highlight">爆款套餐</span>，建议增加该套餐的推广力度。</p>
+      <p><span class="highlight">双人同行套餐</span>今日已购 <strong>28份</strong>，相对较低，可考虑推出限时优惠活动刺激销量。</p>
+    </div>
+
+    <div class="ai-insight">
+      <h5>⚠️ 客流拥堵预警</h5>
+      <p>根据当前已购量与座位时段匹配分析，<span class="highlight">14:00-16:00时段</span>预计将出现客流高峰，当前待到店人数较多，建议提前调配人员。</p>
+    </div>
+
+    <div class="ai-insight">
+      <h5>💡 运营优化建议</h5>
+      <p>1. <strong>配额调整</strong>：建议将线上队列配额提升至 <strong>65%</strong>，以应对线上订单增长趋势。</p>
+      <p>2. <strong>大桌规则</strong>：当前大桌利用率 <strong>78.2%</strong> 较高，可考虑增加1-2张大桌。</p>
+      <p>3. <strong>风控阈值</strong>：近期违规率较低，可适当放宽月度违规阈值至 <strong>5次</strong>。</p>
+      <p>4. <strong>引流建议</strong>：建议在抖音平台加大亲子DIY套餐的推广投放。</p>
+    </div>
+
+    <div class="ai-insight" style="background:linear-gradient(135deg,#f0f4ff,#e8ecff);border:none;">
+      <h5>📝 当日经营总结</h5>
+      <p id="aiSummaryText">今日门店整体运营状况良好，客流和营收均实现双增长。亲子DIY套餐表现亮眼，成为今日爆款。建议关注14:00-16:00时段的客流高峰，提前做好人员和座位调配。整体来看，门店经营呈稳步上升趋势，继续保持当前运营策略。</p>
+    </div>
+
+    <button class="ai-copy" onclick="copyAiSummary()">📋 一键复制总结文案</button>
+  </div>
+</div>
+
+<!-- ==================== Toast提示 ==================== -->
 <div class="toast" id="toast"></div>
 
+<!-- ==================== 加载动画 ==================== -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-spinner"></div>
+  <p style="margin-top:16px;color:#666;font-size:14px;">加载中...</p>
+</div>
+
 <script>
-let pageHistory=['page-home'];
-const tabPages=['page-home','page-gallery','page-booking','page-profile'];
+// 页面导航
+let currentPage = 'page-login';
+let pageHistory = ['page-login'];
 
-function navigateTo(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');pageHistory.push(id);document.getElementById('tabbar').style.display=tabPages.includes(id)?'flex':'none';window.scrollTo(0,0)}
-function goBack(){if(pageHistory.length>1){pageHistory.pop();const p=pageHistory[pageHistory.length-1];document.querySelectorAll('.page').forEach(q=>q.classList.remove('active'));document.getElementById(p).classList.add('active');document.getElementById('tabbar').style.display=tabPages.includes(p)?'flex':'none'}}
-function switchTab(i){const id=tabPages[i];pageHistory=[id];document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');document.getElementById('tabbar').style.display='flex';document.querySelectorAll('.tabbar-item').forEach((t,j)=>t.classList.toggle('active',j===i));window.scrollTo(0,0)}
+function navigateTo(pageId) {
+  // 隐藏所有页面
+  document.querySelectorAll('.page').forEach(page => {
+    page.classList.remove('active');
+  });
+  
+  // 显示目标页面
+  document.getElementById(pageId).classList.add('active');
+  
+  // 更新导航状态
+  if (pageId !== 'page-login') {
+    document.getElementById('globalTopNav').style.display = 'flex';
+    updateSidebarActive(pageId);
+    updatePageTitle(pageId);
+  }
+  
+  // 记录历史
+  if (pageHistory[pageHistory.length - 1] !== pageId) {
+    pageHistory.push(pageId);
+  }
+  currentPage = pageId;
+  
+  // 滚动到顶部
+  window.scrollTo(0, 0);
+}
 
-// C/B切换
-function switchCB(el){const btns=el.querySelectorAll('.cb-btn');btns.forEach(b=>b.classList.remove('active'));event.target.classList.add('active');const isB=event.target.textContent.includes('商');showToast(isB?'已切换到商家端':'已切换到用户端')}
+function login() {
+  showLoading();
+  setTimeout(() => {
+    hideLoading();
+    navigateTo('page-dashboard');
+    showToast('登录成功，欢迎回来！');
+  }, 1000);
+}
 
-// Banner
-let cs=0;const ts=3;
-function goSlide(i){cs=i;document.getElementById('bannerTrack').style.transform=`translateX(-${i*100}%)`;document.querySelectorAll('.banner-dot').forEach((d,j)=>d.classList.toggle('active',j===i))}
-setInterval(()=>{cs=(cs+1)%ts;goSlide(cs)},3500);
-
-// 图库
-function switchGalleryTab(el){document.querySelectorAll('.gallery-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active')}
-function switchMyPattern(el,type){document.querySelectorAll('#page-gallery .option-item').forEach(o=>o.classList.remove('selected'));el.classList.add('selected');document.getElementById('patternGrid').style.display=type==='grid'?'grid':'none';document.getElementById('myPatternContent').style.display=type==='mine'?'block':'none'}
-
-// 选项
-function selectOption(el,pid){document.querySelectorAll(`#${pid} .option-item`).forEach(o=>o.classList.remove('selected'));el.classList.add('selected')}
-function selectTimeSlot(el){if(el.classList.contains('disabled'))return;document.querySelectorAll('.time-slot').forEach(s=>s.classList.remove('selected'));el.classList.add('selected')}
-function selectSeat(el){if(el.classList.contains('occupied')||el.classList.contains('locked'))return;document.querySelectorAll('.seat').forEach(s=>s.classList.remove('selected'));el.classList.add('selected')}
-
-// 时段预约 - 多选时块
-function toggleSlot(el){
-  if(el.classList.contains('disabled'))return;
-  el.classList.toggle('selected');
-  const slots=document.querySelectorAll('#bookingSlots .time-slot.selected');
-  const count=slots.length;
-  document.getElementById('selectedCount').textContent='已选 '+count+' 块';
-  const summary=document.getElementById('bookingSummary');
-  const content=document.getElementById('summaryContent');
-  if(count>0){
-    summary.style.display='block';
-    const times=Array.from(slots).map(s=>s.querySelector('.time').textContent).sort();
-    const start=times[0],end=times[times.length-1];
-    const endHour=parseInt(end)+1;
-    content.innerHTML='<div style="display:flex;justify-content:space-between;"><span>📅 日期</span><span>今天 5/8</span></div>'+
-      '<div style="display:flex;justify-content:space-between;"><span>⏰ 时段</span><span>'+start+' - '+endHour+':00</span></div>'+
-      '<div style="display:flex;justify-content:space-between;"><span>⏱️ 时长</span><span style="color:#ff6b35;font-weight:600;">'+count+'小时</span></div>'+
-      '<div style="display:flex;justify-content:space-between;"><span>🧩 时块数</span><span>'+count+'块</span></div>';
-  }else{
-    summary.style.display='none';
+function updateSidebarActive(pageId) {
+  document.querySelectorAll('.sidebar-item').forEach(item => {
+    item.classList.remove('active');
+  });
+  
+  const pageToSidebar = {
+    'page-dashboard': 0,
+    'page-workspace': 1,
+    'page-orders': 2,
+    'page-patterns': 3,
+    'page-coupon-stats': 4,
+    'page-settings': 5
+  };
+  
+  const index = pageToSidebar[pageId];
+  if (index !== undefined) {
+    document.querySelectorAll('.sidebar-item')[index].classList.add('active');
   }
 }
-function submitBooking(){
-  const count=document.querySelectorAll('#bookingSlots .time-slot.selected').length;
-  if(count===0){showToast('请至少选择1个时块');return}
-  showToast('预约成功！已选'+count+'个时块（'+count+'小时）');
-  document.querySelectorAll('#bookingSlots .time-slot.selected').forEach(s=>s.classList.remove('selected'));
-  document.getElementById('selectedCount').textContent='已选 0 块';
-  document.getElementById('bookingSummary').style.display='none';
+
+function updatePageTitle(pageId) {
+  const titles = {
+    'page-dashboard': '数据看板',
+    'page-workspace': '座位&队列管理',
+    'page-orders': '订单&大桌管理',
+    'page-patterns': '图纸审核管理',
+    'page-coupon-stats': '券&已购量统计',
+    'page-settings': '全局配置'
+  };
+  document.getElementById('pageTitle').textContent = titles[pageId] || '商家后台';
 }
 
-// 收藏
-function toggleFav(btn){if(btn.textContent.includes('收藏')){btn.textContent='❤️ 已收藏';btn.style.background='#ffebee';showToast('已收藏')}else{btn.textContent='❤️ 收藏';btn.style.background='#fff3e0';showToast('已取消收藏')}}
-
-// 券包
-function switchCouponTab(el,status){document.querySelectorAll('.coupon-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active')}
-
-// 弹窗
-function showShareModal(){document.getElementById('shareModal').classList.add('show')}
-function closeModal(id){document.getElementById(id).classList.remove('show')}
-
-// Toast
-function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000)}
-
-// 核销
-function switchVerifyMode(el,mode){
-  document.querySelectorAll('#page-verify .option-item').forEach(o=>o.classList.remove('selected'));
-  el.classList.add('selected');
-  document.getElementById('verifyScanArea').style.display=mode==='scan'?'block':'none';
-  document.getElementById('verifyManualArea').style.display=mode==='manual'?'block':'none';
-  document.getElementById('verifyResult').style.display='none';
+// 侧边栏
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('show');
 }
-function simulateVerify(){
-  document.getElementById('verifyResult').style.display='block';
-  const now=new Date();
-  document.getElementById('verifyTime').textContent=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0')+':'+now.getSeconds().toString().padStart(2,'0');
-  showToast('扫码成功，已核销');
+
+// 跳转到C端小程序
+function goToC端() {
+  window.open('c:\Users\15410\.trae-cn\attachments\de3cd6bb-00ed-4563-884d-5387caa0a6e4_eac5bd0a-c880-4d1d-82fa-effbaebbede1_拼豆DIY小程序.html', '_blank');
 }
-function manualVerify(){
-  const code=document.getElementById('verifyCodeInput').value.trim();
-  if(!code){showToast('请输入券码');return}
-  document.getElementById('verifyResult').style.display='block';
-  const now=new Date();
-  document.getElementById('verifyTime').textContent=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0')+':'+now.getSeconds().toString().padStart(2,'0');
-  showToast('核销成功：'+code);
+
+// 筛选切换
+function switchFilter(el) {
+  const parent = el.parentElement;
+  parent.querySelectorAll('.filter-item').forEach(item => {
+    item.classList.remove('active');
+  });
+  el.classList.add('active');
 }
-function resetVerify(){
-  document.getElementById('verifyResult').style.display='none';
-  document.getElementById('verifyCodeInput').value='';
+
+// 图表标签切换
+function switchChartTab(el) {
+  const parent = el.parentElement;
+  parent.querySelectorAll('.chart-tab').forEach(tab => {
+    tab.classList.remove('active');
+  });
+  el.classList.add('active');
+  showToast('已切换至' + el.textContent + '视图');
 }
+
+// 队列标签切换
+function switchQueueTab(el, type) {
+  const parent = el.parentElement;
+  parent.querySelectorAll('.queue-tab').forEach(tab => {
+    tab.classList.remove('active');
+  });
+  el.classList.add('active');
+  showToast('已切换至' + (type === 'online' ? '线上' : '线下') + '队列');
+}
+
+// 订单模块切换
+function switchOrderTab(el, contentId) {
+  const parent = el.parentElement;
+  parent.querySelectorAll('.queue-tab').forEach(tab => {
+    tab.classList.remove('active');
+  });
+  el.classList.add('active');
+  
+  document.getElementById('orders-content').style.display = 'none';
+  document.getElementById('teams-content').style.display = 'none';
+  document.getElementById('control-content').style.display = 'none';
+  
+  const content = document.getElementById(contentId + '-content');
+  if (content) {
+    content.style.display = 'block';
+  }
+}
+
+// 图纸审核模块切换
+function switchPatternTab(el, contentId) {
+  const parent = el.parentElement;
+  parent.querySelectorAll('.queue-tab').forEach(tab => {
+    tab.classList.remove('active');
+  });
+  el.classList.add('active');
+  
+  document.querySelectorAll('.pattern-content').forEach(c => {
+    c.style.display = 'none';
+  });
+  
+  const content = document.getElementById('pattern-' + contentId);
+  if (content) {
+    content.style.display = 'block';
+  }
+}
+
+// 订单筛选切换
+function switchOrderFilter(el, filterType) {
+  const parent = el.parentElement;
+  parent.querySelectorAll('.filter-item').forEach(item => {
+    item.classList.remove('active');
+  });
+  el.classList.add('active');
+  
+  // 隐藏所有订单筛选内容
+  document.querySelectorAll('.order-filter-content').forEach(content => {
+    content.style.display = 'none';
+  });
+  
+  // 显示选中的筛选内容
+  const selectedContent = document.getElementById('order-' + filterType);
+  if (selectedContent) {
+    selectedContent.style.display = 'block';
+  }
+}
+
+// 券统计日/周/月视图切换
+function switchCouponStatsTab(el, viewType) {
+  const parent = el.parentElement;
+  parent.querySelectorAll('.chart-tab').forEach(tab => {
+    tab.classList.remove('active');
+  });
+  el.classList.add('active');
+  
+  // 隐藏所有统计视图
+  document.querySelectorAll('.stats-view').forEach(view => {
+    view.style.display = 'none';
+  });
+  
+  // 显示选中的视图
+  const selectedView = document.getElementById('stats-' + viewType);
+  if (selectedView) {
+    selectedView.style.display = 'block';
+  }
+}
+
+// 券统计套餐卡片切换
+function switchCouponTab(el, contentId) {
+  const parent = el.parentElement;
+  parent.querySelectorAll('.queue-tab').forEach(tab => {
+    tab.classList.remove('active');
+  });
+  el.classList.add('active');
+  
+  document.querySelectorAll('.coupon-content').forEach(c => {
+    c.style.display = 'none';
+  });
+  
+  const content = document.getElementById('coupon-' + contentId);
+  if (content) {
+    content.style.display = 'block';
+  }
+}
+
+// 趋势图表切换
+function switchTrendTab(el, chartId) {
+  const parent = el.parentElement;
+  parent.querySelectorAll('.queue-tab').forEach(tab => {
+    tab.classList.remove('active');
+  });
+  el.classList.add('active');
+  
+  // 隐藏所有趋势图表
+  document.querySelectorAll('.trend-chart').forEach(chart => {
+    chart.style.display = 'none';
+    chart.classList.remove('active');
+  });
+  
+  // 显示选中的图表
+  const selectedChart = document.getElementById('trend-' + chartId);
+  if (selectedChart) {
+    selectedChart.style.display = 'block';
+    selectedChart.classList.add('active');
+  }
+}
+
+// 开关切换
+function toggleSwitch(el) {
+  el.classList.toggle('on');
+}
+
+// AI面板
+function showAiPanel() {
+  document.getElementById('aiPanel').classList.add('open');
+  document.getElementById('aiOverlay').classList.add('show');
+}
+
+function closeAiPanel() {
+  document.getElementById('aiPanel').classList.remove('open');
+  document.getElementById('aiOverlay').classList.remove('show');
+}
+
+function copyAiSummary() {
+  const text = document.getElementById('aiSummaryText').textContent;
+  // 模拟复制
+  showToast('总结文案已复制到剪贴板！');
+}
+
+// Toast提示
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, 2000);
+}
+
+// 加载动画
+function showLoading() {
+  document.getElementById('loadingOverlay').classList.add('show');
+}
+
+function hideLoading() {
+  document.getElementById('loadingOverlay').classList.remove('show');
+}
+
+// 初始化
+window.onload = function() {
+  // 默认显示登录页
+  navigateTo('page-login');
+};
 </script>
+
 </body>
 </html>
